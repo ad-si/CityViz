@@ -1,0 +1,17 @@
+{
+  "name": "CityViz",
+  "version": "0.1.0",
+  "description": "Interactive real time WebGL powered 3d rendering of Rotterdam ",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://projects.hpi3d.de/git/06-webgl-client"
+  },
+  "keywords": [
+    "WebGL",
+    "3D",
+    "city"
+  ],
+  "author": "Adrian Sieber, Stephan Detje",
+  "license": "All rights reserved"
+}
