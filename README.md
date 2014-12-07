@@ -1,5 +1,14 @@
 # CityViz
 
+## Getting Started
+
+Clone repository from [projects.hpi3d.de](https://projects.hpi3d.de) website like this:
+`$ git clone https://projects.hpi3d.de/git/06-webgl-client`
+
+If you get a warning about SSL problems try following:
+´git -c http.sslVerify=false clone https://projects.hpi3d.de/git/06-webgl-client`
+
+
 ## Installation of 3DCityDB and postgres
 
 On Mac:
