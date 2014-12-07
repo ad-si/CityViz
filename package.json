@@ -13,5 +13,9 @@
     "city"
   ],
   "author": "Adrian Sieber, Stephan Detje",
-  "license": "All rights reserved"
+  "license": "All rights reserved",
+  "dependencies": {
+    "cesiumjs": "^1.4.0",
+    "three": "^0.69.0"
+  }
 }
