@@ -19,6 +19,9 @@ On Mac:
 - [github.com/rmx/collada-converter](https://github.com/rmx/collada-converter) - A library for converting COLLADA files to a format suitable for WebGL
 - https://github.com/rmx/threejs-collada
 - https://github.com/KhronosGroup/glTF
+- http://f4map.com
+- http://lo-th.github.io/3d.city
+- https://github.com/mrdoob/three.js/issues/5708
 
 
 ### Viewer
