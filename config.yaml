@@ -1,0 +1,900 @@
+project:
+  xmlns: http://www.gis.tu-berlin.de/3dcitydb-impexp/config
+  database:
+    referenceSystems:
+      referenceSystem:
+        id: UUID_c15644ee-1b10-4ce8-a1c5-255e5ed41a74
+        srid: {$t: 4326}
+        gmlSrsName: {$t: urn:ogc:def:crs:EPSG:7.9:4326}
+        description: {$t: "[Default] WGS 84"}
+    connections:
+      connection:
+        id: UUID_3dd87189-091e-4b93-a48e-45feb26b6b92
+        description: {$t: cityViz}
+        server: {$t: localhost}
+        port: {$t: 5432}
+        sid: {$t: cityViz}
+        user: {$t: adrian}
+        password: {$t: cityViz}
+        savePassword: {$t: true}
+    activeConnection: {$t: UUID_3dd87189-091e-4b93-a48e-45feb26b6b92}
+    updateBatching:
+      featureBatchValue: {$t: 20}
+      gmlIdLookupServerBatchValue: {$t: 1000}
+      tempBatchValue: {$t: 1000}
+    operation:
+      lastUsed: {$t: report}
+      boundingBoxFeatureClass: {$t: CityObject}
+      boundingBoxSrs: {$t: UUID_150cb923-85aa-4a10-b7a1-3f7fc5883cf2}
+      spatialIndex: {$t: false}
+      normalIndex: {$t: false}
+  import:
+    continuation:
+      lineage: {}
+      updatingPersonMode: {$t: database}
+      updatingPerson: {}
+      reasonForUpdate: {}
+    path:
+      mode: {$t: lastUsed}
+      standardPath: {}
+      lastUsedPath: {$t: /Volumes/HDD/hpi/cityViz/citymodel}
+    gmlId:
+      uuidMode: {$t: replace}
+      keepGmlIdAsExternalReference: {$t: true}
+      codeSpaceMode: {$t: user}
+      codeSpace: {$t: UUID}
+    address:
+      importXAL: {$t: true}
+    appearances:
+      import: {$t: true}
+      importTextureFiles: {$t: true}
+      themeForTexturedSurface: {$t: rgbTexture}
+    filter:
+      mode: {$t: complex}
+      simple:
+        gmlIds: {}
+      complex:
+        featureCount:
+          active: false
+        gmlName:
+          active: false
+          value: {}
+        featureClass:
+          active: false
+          building: {$t: true}
+          waterBody: {$t: true}
+          landUse: {$t: true}
+          vegetation: {$t: true}
+          transportation: {$t: true}
+          reliefFeature: {$t: true}
+          cityFurniture: {$t: true}
+          genericCityObject: {$t: true}
+          cityObjectGroup: {$t: true}
+        boundingBox:
+          active: false
+          srs: {$t: UUID_150cb923-85aa-4a10-b7a1-3f7fc5883cf2}
+          lowerLeft: {}
+          upperRight: {}
+          mode: {$t: overlap}
+    affineTransformation:
+      useAffineTransformation: false
+      transformationMatrix: {$t: 1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0 0.0}
+    indexes:
+      spatial: {$t: unchanged}
+      normal: {$t: unchanged}
+    xmlValidation:
+      useXMLValidation: {$t: false}
+      reportOneErrorPerFeature: {$t: false}
+    system:
+      gmlIdLookupServer:
+        feature:
+          cacheSize: {$t: 200000}
+          pageFactor: {$t: 0.85}
+          partitions: {$t: 10}
+        geometry:
+          cacheSize: {$t: 200000}
+          pageFactor: {$t: 0.85}
+          partitions: {$t: 10}
+      threadPool:
+        default:
+          minThreads: {$t: 4}
+          maxThreads: {$t: 4}
+  export:
+    path:
+      mode: {$t: lastUsed}
+      standardPath: {}
+      lastUsedPath: {}
+    targetSRS: {$t: UUID_150cb923-85aa-4a10-b7a1-3f7fc5883cf2}
+    address:
+      exportMode: {$t: db}
+      useFallback: {$t: false}
+    appearances:
+      export: {$t: true}
+      exportTextureFiles: {$t: true}
+      overwriteTextureFiles: {$t: true}
+      uniqueTextureFileNames: {$t: false}
+      texturePathMode: {$t: relative}
+      relativeTexturePath: {$t: appearance}
+      absoluteTexturePath: {}
+    filter:
+      mode: {$t: complex}
+      simple:
+        gmlIds: {}
+      complex:
+        featureCount:
+          active: false
+        gmlName:
+          active: false
+          value: {}
+        featureClass:
+          active: true
+          building: {$t: false}
+          waterBody: {$t: false}
+          landUse: {$t: false}
+          vegetation: {$t: false}
+          transportation: {$t: false}
+          reliefFeature: {$t: false}
+          cityFurniture: {$t: false}
+          genericCityObject: {$t: false}
+          cityObjectGroup: {$t: false}
+        boundingBox:
+          active: false
+          srs: {$t: UUID_150cb923-85aa-4a10-b7a1-3f7fc5883cf2}
+          lowerLeft: {}
+          upperRight: {}
+          mode: {$t: overlap}
+          tiling:
+            mode: no_tiling
+            rows: {$t: 1}
+            columns: {$t: 1}
+            tilePath: {$t: tile}
+            tilePathSuffix: {$t: row_column}
+            tileNameSuffix: {$t: none}
+            includeTileAsGenericAttribute: {$t: false}
+            genericAttributeValue: {$t: xMin_yMin_xMax_yMax}
+    cityGMLVersion: {$t: v1.0.0}
+    xlink:
+      feature:
+        multipleRepresentationMode: {$t: xlink}
+        idPrefix: {$t: UUID_}
+        appendId: {$t: false}
+        keepGmlIdAsExternalReference: {$t: false}
+      geometry:
+        multipleRepresentationMode: {$t: xlink}
+        idPrefix: {$t: UUID_}
+        appendId: {$t: false}
+    system:
+      gmlIdLookupServer:
+        feature:
+          cacheSize: {$t: 200000}
+          pageFactor: {$t: 0.85}
+          partitions: {$t: 10}
+        geometry:
+          cacheSize: {$t: 200000}
+          pageFactor: {$t: 0.85}
+          partitions: {$t: 10}
+      threadPool:
+        default:
+          minThreads: {$t: 4}
+          maxThreads: {$t: 4}
+  kmlExport:
+    path:
+      mode: {$t: lastUsed}
+      standardPath: {}
+      lastUsedPath: {$t: /Volumes/HDD/hpi/cityViz}
+    filter:
+      mode: {$t: complex}
+      simple:
+        gmlIds: {}
+      complex:
+        featureCount:
+          active: false
+        gmlName:
+          active: false
+          value: {}
+        featureClass:
+          active: false
+          building: {$t: true}
+          waterBody: {$t: true}
+          landUse: {$t: true}
+          vegetation: {$t: true}
+          transportation: {$t: true}
+          reliefFeature: {$t: true}
+          cityFurniture: {$t: true}
+          genericCityObject: {$t: true}
+          cityObjectGroup: {$t: true}
+        boundingBox:
+          active: true
+          srs: {$t: UUID_c15644ee-1b10-4ce8-a1c5-255e5ed41a74}
+          lowerLeft:
+            x: {$t: -34}
+            y: {$t: 24}
+          upperRight:
+            x: {$t: 34}
+            y: {$t: 65}
+          mode: {$t: overlap}
+          tiling:
+            mode: no_tiling
+            rows: {$t: 1}
+            columns: {$t: 1}
+            tilePath: {$t: tile}
+            tilePathSuffix: {$t: row_column}
+            tileNameSuffix: {$t: none}
+            includeTileAsGenericAttribute: {$t: false}
+            genericAttributeValue: {$t: xMin_yMin_xMax_yMax}
+    lodToExportFrom: {$t: 2}
+    buildingDisplayForms:
+      displayForm:
+        -
+          form: {$t: 4}
+          active: {$t: true}
+          visibleFrom: {$t: 0}
+          rgba0: {$t: -1}
+          rgba1: {$t: -1}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 3}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -926102324}
+          rgba1: {$t: -932813210}
+          rgba2: {$t: -922799309}
+          rgba3: {$t: -929497088}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 2}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 1}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+    buildingColladaOptions:
+      ignoreSurfaceOrientation: {$t: false}
+      generateTextureAtlases: {$t: true}
+      packingAlgorithm: {$t: 5}
+      textureAtlasPots: {$t: true}
+      scaleImages: {$t: false}
+      imageScaleFactor: {$t: 1}
+      groupObjects: {$t: false}
+      groupSize: {$t: 1}
+    buildingBalloon:
+      includeDescription: {$t: true}
+      balloonContentMode: {$t: gen_attrib}
+      balloonContentPath:
+        mode: {$t: lastUsed}
+        standardPath: {}
+        lastUsedPath: {}
+      balloonContentTemplateFile: {}
+      balloonContentInSeparateFile: {$t: false}
+    waterBodyDisplayForms:
+      displayForm:
+        -
+          form: {$t: 4}
+          active: {$t: true}
+          visibleFrom: {$t: 0}
+          rgba0: {$t: -1}
+          rgba1: {$t: -1}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 3}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -926102324}
+          rgba1: {$t: -932813210}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 2}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 1}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+    waterBodyColladaOptions:
+      ignoreSurfaceOrientation: {$t: false}
+      generateTextureAtlases: {$t: true}
+      packingAlgorithm: {$t: 5}
+      textureAtlasPots: {$t: true}
+      scaleImages: {$t: false}
+      imageScaleFactor: {$t: 1}
+      groupObjects: {$t: false}
+      groupSize: {$t: 1}
+    waterBodyBalloon:
+      includeDescription: {$t: true}
+      balloonContentMode: {$t: gen_attrib}
+      balloonContentPath:
+        mode: {$t: lastUsed}
+        standardPath: {}
+        lastUsedPath: {}
+      balloonContentTemplateFile: {}
+      balloonContentInSeparateFile: {$t: false}
+    landUseDisplayForms:
+      displayForm:
+        -
+          form: {$t: 4}
+          active: {$t: true}
+          visibleFrom: {$t: 0}
+          rgba0: {$t: -1}
+          rgba1: {$t: -1}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 3}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -926102324}
+          rgba1: {$t: -932813210}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 2}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 1}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+    landUseColladaOptions:
+      ignoreSurfaceOrientation: {$t: false}
+      generateTextureAtlases: {$t: true}
+      packingAlgorithm: {$t: 5}
+      textureAtlasPots: {$t: true}
+      scaleImages: {$t: false}
+      imageScaleFactor: {$t: 1}
+      groupObjects: {$t: false}
+      groupSize: {$t: 1}
+    landUseBalloon:
+      includeDescription: {$t: true}
+      balloonContentMode: {$t: gen_attrib}
+      balloonContentPath:
+        mode: {$t: lastUsed}
+        standardPath: {}
+        lastUsedPath: {}
+      balloonContentTemplateFile: {}
+      balloonContentInSeparateFile: {$t: false}
+    vegetationDisplayForms:
+      displayForm:
+        -
+          form: {$t: 4}
+          active: {$t: true}
+          visibleFrom: {$t: 0}
+          rgba0: {$t: -1}
+          rgba1: {$t: -1}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 3}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -926102324}
+          rgba1: {$t: -932813210}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 2}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 1}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+    vegetationColladaOptions:
+      ignoreSurfaceOrientation: {$t: false}
+      generateTextureAtlases: {$t: true}
+      packingAlgorithm: {$t: 5}
+      textureAtlasPots: {$t: true}
+      scaleImages: {$t: false}
+      imageScaleFactor: {$t: 1}
+      groupObjects: {$t: false}
+      groupSize: {$t: 1}
+    vegetationBalloon:
+      includeDescription: {$t: true}
+      balloonContentMode: {$t: gen_attrib}
+      balloonContentPath:
+        mode: {$t: lastUsed}
+        standardPath: {}
+        lastUsedPath: {}
+      balloonContentTemplateFile: {}
+      balloonContentInSeparateFile: {$t: false}
+    transportationDisplayForms:
+      displayForm:
+        -
+          form: {$t: 4}
+          active: {$t: true}
+          visibleFrom: {$t: 0}
+          rgba0: {$t: -1}
+          rgba1: {$t: -1}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 3}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -926102324}
+          rgba1: {$t: -932813210}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 2}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 1}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+    transportationColladaOptions:
+      ignoreSurfaceOrientation: {$t: false}
+      generateTextureAtlases: {$t: true}
+      packingAlgorithm: {$t: 5}
+      textureAtlasPots: {$t: true}
+      scaleImages: {$t: false}
+      imageScaleFactor: {$t: 1}
+      groupObjects: {$t: false}
+      groupSize: {$t: 1}
+    transportationBalloon:
+      includeDescription: {$t: true}
+      balloonContentMode: {$t: gen_attrib}
+      balloonContentPath:
+        mode: {$t: lastUsed}
+        standardPath: {}
+        lastUsedPath: {}
+      balloonContentTemplateFile: {}
+      balloonContentInSeparateFile: {$t: false}
+    reliefDisplayForms:
+      displayForm:
+        -
+          form: {$t: 4}
+          active: {$t: true}
+          visibleFrom: {$t: 0}
+          rgba0: {$t: -1}
+          rgba1: {$t: -1}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 3}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -926102324}
+          rgba1: {$t: -932813210}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 2}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 1}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+    reliefColladaOptions:
+      ignoreSurfaceOrientation: {$t: false}
+      generateTextureAtlases: {$t: true}
+      packingAlgorithm: {$t: 5}
+      textureAtlasPots: {$t: true}
+      scaleImages: {$t: false}
+      imageScaleFactor: {$t: 1}
+      groupObjects: {$t: false}
+      groupSize: {$t: 1}
+    reliefBalloon:
+      includeDescription: {$t: true}
+      balloonContentMode: {$t: gen_attrib}
+      balloonContentPath:
+        mode: {$t: lastUsed}
+        standardPath: {}
+        lastUsedPath: {}
+      balloonContentTemplateFile: {}
+      balloonContentInSeparateFile: {$t: false}
+    cityFurnitureDisplayForms:
+      displayForm:
+        -
+          form: {$t: 4}
+          active: {$t: true}
+          visibleFrom: {$t: 0}
+          rgba0: {$t: -1}
+          rgba1: {$t: -1}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 3}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -926102324}
+          rgba1: {$t: -932813210}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 2}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 1}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+    cityFurnitureColladaOptions:
+      ignoreSurfaceOrientation: {$t: false}
+      generateTextureAtlases: {$t: true}
+      packingAlgorithm: {$t: 5}
+      textureAtlasPots: {$t: true}
+      scaleImages: {$t: false}
+      imageScaleFactor: {$t: 1}
+      groupObjects: {$t: false}
+      groupSize: {$t: 1}
+    cityFurnitureBalloon:
+      includeDescription: {$t: true}
+      balloonContentMode: {$t: gen_attrib}
+      balloonContentPath:
+        mode: {$t: lastUsed}
+        standardPath: {}
+        lastUsedPath: {}
+      balloonContentTemplateFile: {}
+      balloonContentInSeparateFile: {$t: false}
+    genericCityObjectDisplayForms:
+      displayForm:
+        -
+          form: {$t: 4}
+          active: {$t: true}
+          visibleFrom: {$t: 0}
+          rgba0: {$t: -1}
+          rgba1: {$t: -1}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 3}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -926102324}
+          rgba1: {$t: -932813210}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 2}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 1}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+    genericCityObjectColladaOptions:
+      ignoreSurfaceOrientation: {$t: false}
+      generateTextureAtlases: {$t: true}
+      packingAlgorithm: {$t: 5}
+      textureAtlasPots: {$t: true}
+      scaleImages: {$t: false}
+      imageScaleFactor: {$t: 1}
+      groupObjects: {$t: false}
+      groupSize: {$t: 1}
+    genericCityObjectBalloon:
+      includeDescription: {$t: true}
+      balloonContentMode: {$t: gen_attrib}
+      balloonContentPath:
+        mode: {$t: lastUsed}
+        standardPath: {}
+        lastUsedPath: {}
+      balloonContentTemplateFile: {}
+      balloonContentInSeparateFile: {$t: false}
+    cityObjectGroupDisplayForms:
+      displayForm:
+        -
+          form: {$t: 4}
+          active: {$t: true}
+          visibleFrom: {$t: 0}
+          rgba0: {$t: -1}
+          rgba1: {$t: -1}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -1}
+          rgba5: {$t: -1}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 3}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -1}
+          rgba1: {$t: -1}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -1}
+          rgba5: {$t: -1}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 2}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -1}
+          rgba1: {$t: -1}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -1}
+          rgba5: {$t: -1}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+        -
+          form: {$t: 1}
+          active: {$t: false}
+          visibleFrom: {$t: -1}
+          rgba0: {$t: -922760192}
+          rgba1: {$t: -922786253}
+          rgba2: {$t: -1}
+          rgba3: {$t: -1}
+          rgba4: {$t: -932774042}
+          rgba5: {$t: -922747034}
+          highlightingEnabled: {$t: false}
+          highlightingDistance: {$t: 0.75}
+    cityObjectGroupBalloon:
+      includeDescription: {$t: true}
+      balloonContentMode: {$t: gen_attrib}
+      balloonContentPath:
+        mode: {$t: lastUsed}
+        standardPath: {}
+        lastUsedPath: {}
+      balloonContentTemplateFile: {}
+      balloonContentInSeparateFile: {$t: false}
+    exportAsKmz: {$t: true}
+    showBoundingBox: {$t: true}
+    showTileBorders: {$t: true}
+    autoTileSideLength: {$t: 125}
+    oneFilePerObject: {$t: false}
+    singleObjectRegionSize: {$t: 50}
+    viewRefreshMode: {$t: onRegion}
+    viewRefreshTime: {$t: 1}
+    writeJSONFile: {$t: false}
+    writeJSONPFile: {$t: false}
+    callbackNameJSONP: {}
+    appearanceTheme: {$t: none}
+    altitudeMode: {$t: absolute}
+    altitudeOffsetMode: {$t: generic_attribute}
+    altitudeOffsetValue: {$t: 0}
+    callGElevationService: {$t: true}
+    useOriginalZCoords: {$t: false}
+    system:
+      gmlIdLookupServer:
+        feature:
+          cacheSize: {$t: 200000}
+          pageFactor: {$t: 0.85}
+          partitions: {$t: 10}
+        geometry:
+          cacheSize: {$t: 200000}
+          pageFactor: {$t: 0.85}
+          partitions: {$t: 10}
+      threadPool:
+        default:
+          minThreads: {$t: 4}
+          maxThreads: {$t: 4}
+  global:
+    logging:
+      console:
+        wrapText: {$t: false}
+        logLevel: {$t: info}
+      file:
+        active: false
+        logLevel: {$t: info}
+        useAlternativeLogPath: {$t: false}
+        alternativeLogPath: {}
+    language: {$t: en}
+    proxies:
+      useSingleProxy: false
+      proxyList:
+        proxy:
+          -
+            type: http
+            isEnabled: false
+            requiresAuthentication: false
+            host: {}
+            port: {$t: 80}
+            username: {}
+            password: {}
+            savePassword: {$t: false}
+          -
+            type: https
+            isEnabled: false
+            host: {}
+            port: {$t: 443}
+            username: {}
+            password: {}
+            savePassword: {$t: false}
+          -
+            type: socks
+            isEnabled: false
+            host: {}
+            port: {$t: 1080}
+            username: {}
+            password: {}
+            savePassword: {$t: false}
+  extensions: {}
