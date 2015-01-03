@@ -20,6 +20,7 @@ On Mac:
 4. Open `/Applications/3DCityDB-Importer-Exporter/3dcitydb/postgis/CREATE_DB.sh` with a text-editor and adapt the exported variables to your settings.
 	Then create the necessary schemas and tables by executing this shell-script.
 6. Open the 3D City Database Importer/Exporter and connect to the database.
+	(By executing `$ /Applications/3DCityDB-Importer-Exporter/3DCityDB-Importer-Exporter.sh`)
 7. Import your files with the Importer/Exporter.
 
 
@@ -31,6 +32,7 @@ On Mac:
 - http://f4map.com
 - http://lo-th.github.io/3d.city
 - https://github.com/mrdoob/three.js/issues/5708
+- https://arcgis.com - Gives everyone in your organization the ability to discover, use, make and share maps.
 
 
 ### Viewer

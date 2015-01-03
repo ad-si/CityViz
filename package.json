@@ -16,6 +16,8 @@
   "license": "All rights reserved",
   "dependencies": {
     "cesiumjs": "^1.4.0",
-    "three": "^0.69.0"
+    "js-yaml": "^3.2.5",
+    "three": "^0.69.0",
+    "xml2json": "^0.5.1"
   }
 }
