@@ -1,5 +1,4 @@
-var path = require('path'),
-	fs = require('fs'),
+var fs = require('fs'),
 	temp = require('temp'),
 	childProcess = require('child_process'),
 
@@ -22,13 +21,13 @@ module.exports.getFromDb = function (options, callback) {
 
 	var defaults = {
 			config: {}, // Config file containing project settings
-			export: 'fileName', // Export data to this file
 			import: [], // Array of directories and files to import
-			kmlExport: 'fileName' // Export KML/COLLADA data to this file
+			format: 'xml' // xml, kml, kmz
 		},
 		shellCommand,
 		configFile,
 		exportFile,
+		javaPath,
 		key
 
 
@@ -40,20 +39,24 @@ module.exports.getFromDb = function (options, callback) {
 			options[key] = options[key] || defaults[key]
 
 
-	configFile = path.resolve(__dirname, '../build/config.xml') //temp.path()
+	configFile = temp.path()
 	fs.writeFileSync(
 		configFile,
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		parser.toXml(options.config)
 	)
 
-	exportFile = path.resolve(__dirname, '../build/export') // temp.path()
+	exportFile = temp.path()
 
 	fs.closeSync(fs.openSync(exportFile, 'w'))
 
-	// TODO: Use JAVA_HOME environment variable
+	javaPath = process.env.JAVA_HOME ?
+	           process.env.JAVA_HOME + '/bin/java' :
+	           'java'
+
+
 	shellCommand = [
-		'/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/bin/java',
+		javaPath,
 		'-jar',
 		'-Xms128m',
 		'-Xmx768m',
@@ -61,45 +64,40 @@ module.exports.getFromDb = function (options, callback) {
 		'-shell',
 		(options.format === 'xml') ? '-export' : '-kmlExport',
 		exportFile,
-		//'-config  /Users/adrian/3DCityDB-Importer-Exporter/config/project.xml'
-		'-config ' + path.resolve(__dirname, '../build/config.xml')
-		//'-config ' + configFile
+		'-config ' + configFile
 	]
 
-	console.log('Execute:', shellCommand.join(' '))
-
 	process.chdir('/Applications/3DCityDB-Importer-Exporter')
-
-	process.cwd()
 
 	childProcess.exec(
 		shellCommand.join(' '),
 		function (error, stdout, stderr) {
 
-			if (error) {
-				callback(error)
-				return
-			}
+			if (error)
+				return callback(error)
 
 			console.log(stdout.toString())
 			console.error(stderr.toString())
 
-			fs.readFile(exportFile, {}, function (error, data) {
+			fs.unlink(configFile, function (error) {
+				if (error && error.code !== 'ENOENT')
+					throw error
+			})
 
-				if (error) {
-					callback(error)
-					return
+			fs.readFile(
+				exportFile + '_collada.' + options.format, {},
+				function (error, data) {
+
+					if (error)
+						return callback(error)
+					else
+						callback(null, data)
 				}
-				else
-					callback(null, data)
+			)
 
-				/*fs.unlink(exportFile, function (error) {
-				 if (error && error.code !== 'ENOENT') {
-				 console.error('Delete temp export file…')
-				 throw error
-				 }
-				 })
-				 */
+			fs.unlink(exportFile, function (error) {
+				if (error && error.code !== 'ENOENT')
+					throw error
 			})
 		}
 	)
