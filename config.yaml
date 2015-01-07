@@ -1,5 +1,6 @@
 project:
   xmlns: http://www.gis.tu-berlin.de/3dcitydb-impexp/config
+  "xmlns:match": http://www.gis.tu-berlin.de/3dcitydb-impexp/config/matching-merging
   database:
     referenceSystems:
       referenceSystem:
@@ -17,7 +18,7 @@ project:
         user: {$t: adrian}
         password: {$t: cityViz}
         savePassword: {$t: true}
-    activeConnection: {$t: UUID_3dd87189-091e-4b93-a48e-45feb26b6b92}
+    activeConnection: {$t: "UUID_3dd87189-091e-4b93-a48e-45feb26b6b92"}
     updateBatching:
       featureBatchValue: {$t: 20}
       gmlIdLookupServerBatchValue: {$t: 1000}
@@ -25,7 +26,7 @@ project:
     operation:
       lastUsed: {$t: report}
       boundingBoxFeatureClass: {$t: CityObject}
-      boundingBoxSrs: {$t: UUID_150cb923-85aa-4a10-b7a1-3f7fc5883cf2}
+      boundingBoxSrs: {$t: "UUID_09d7e4e5-3268-4438-9903-4960c406f0e6"}
       spatialIndex: {$t: false}
       normalIndex: {$t: false}
   import:
@@ -72,7 +73,7 @@ project:
           cityObjectGroup: {$t: true}
         boundingBox:
           active: false
-          srs: {$t: UUID_150cb923-85aa-4a10-b7a1-3f7fc5883cf2}
+          srs: {$t: "UUID_09d7e4e5-3268-4438-9903-4960c406f0e6"}
           lowerLeft: {}
           upperRight: {}
           mode: {$t: overlap}
@@ -103,7 +104,7 @@ project:
     path:
       mode: {$t: lastUsed}
       standardPath: {}
-      lastUsedPath: {}
+      lastUsedPath: {$t: /Users/adrian/Desktop}
     targetSRS: {$t: UUID_150cb923-85aa-4a10-b7a1-3f7fc5883cf2}
     address:
       exportMode: {$t: db}
@@ -117,9 +118,10 @@ project:
       relativeTexturePath: {$t: appearance}
       absoluteTexturePath: {}
     filter:
-      mode: {$t: complex}
+      mode: {$t: simple}
       simple:
-        gmlIds: {}
+        gmlIds:
+          gmlId: {$t: UUID_b960fd73-ae5b-4259-b6cf-768abd303c7d}
       complex:
         featureCount:
           active: false
@@ -183,9 +185,10 @@ project:
       standardPath: {}
       lastUsedPath: {$t: /Volumes/HDD/hpi/cityViz}
     filter:
-      mode: {$t: complex}
+      mode: {$t: simple}
       simple:
-        gmlIds: {}
+        gmlIds:
+          gmlId: {$t: UUID_b960fd73-ae5b-4259-b6cf-768abd303c7d}
       complex:
         featureCount:
           active: false
@@ -204,14 +207,14 @@ project:
           genericCityObject: {$t: true}
           cityObjectGroup: {$t: true}
         boundingBox:
-          active: true
+          active: false
           srs: {$t: UUID_c15644ee-1b10-4ce8-a1c5-255e5ed41a74}
           lowerLeft:
-            x: {$t: -34}
-            y: {$t: 24}
+            x: {$t: "-34.0"}
+            y: {$t: "24.0"}
           upperRight:
-            x: {$t: 34}
-            y: {$t: 65}
+            x: {$t: "34.0"}
+            y: {$t: "65.0"}
           mode: {$t: overlap}
           tiling:
             mode: no_tiling
@@ -222,7 +225,7 @@ project:
             tileNameSuffix: {$t: none}
             includeTileAsGenericAttribute: {$t: false}
             genericAttributeValue: {$t: xMin_yMin_xMax_yMax}
-    lodToExportFrom: {$t: 2}
+    lodToExportFrom: {$t: 5}
     buildingDisplayForms:
       displayForm:
         -
@@ -279,7 +282,7 @@ project:
       packingAlgorithm: {$t: 5}
       textureAtlasPots: {$t: true}
       scaleImages: {$t: false}
-      imageScaleFactor: {$t: 1}
+      imageScaleFactor: {$t: "1.0"}
       groupObjects: {$t: false}
       groupSize: {$t: 1}
     buildingBalloon:
@@ -347,7 +350,7 @@ project:
       packingAlgorithm: {$t: 5}
       textureAtlasPots: {$t: true}
       scaleImages: {$t: false}
-      imageScaleFactor: {$t: 1}
+      imageScaleFactor: {$t: "1.0"}
       groupObjects: {$t: false}
       groupSize: {$t: 1}
     waterBodyBalloon:
@@ -415,7 +418,7 @@ project:
       packingAlgorithm: {$t: 5}
       textureAtlasPots: {$t: true}
       scaleImages: {$t: false}
-      imageScaleFactor: {$t: 1}
+      imageScaleFactor: {$t: "1.0"}
       groupObjects: {$t: false}
       groupSize: {$t: 1}
     landUseBalloon:
@@ -483,7 +486,7 @@ project:
       packingAlgorithm: {$t: 5}
       textureAtlasPots: {$t: true}
       scaleImages: {$t: false}
-      imageScaleFactor: {$t: 1}
+      imageScaleFactor: {$t: "1.0"}
       groupObjects: {$t: false}
       groupSize: {$t: 1}
     vegetationBalloon:
@@ -551,7 +554,7 @@ project:
       packingAlgorithm: {$t: 5}
       textureAtlasPots: {$t: true}
       scaleImages: {$t: false}
-      imageScaleFactor: {$t: 1}
+      imageScaleFactor: {$t: "1.0"}
       groupObjects: {$t: false}
       groupSize: {$t: 1}
     transportationBalloon:
@@ -619,7 +622,7 @@ project:
       packingAlgorithm: {$t: 5}
       textureAtlasPots: {$t: true}
       scaleImages: {$t: false}
-      imageScaleFactor: {$t: 1}
+      imageScaleFactor: {$t: "1.0"}
       groupObjects: {$t: false}
       groupSize: {$t: 1}
     reliefBalloon:
@@ -687,7 +690,7 @@ project:
       packingAlgorithm: {$t: 5}
       textureAtlasPots: {$t: true}
       scaleImages: {$t: false}
-      imageScaleFactor: {$t: 1}
+      imageScaleFactor: {$t: "1.0"}
       groupObjects: {$t: false}
       groupSize: {$t: 1}
     cityFurnitureBalloon:
@@ -755,7 +758,7 @@ project:
       packingAlgorithm: {$t: 5}
       textureAtlasPots: {$t: true}
       scaleImages: {$t: false}
-      imageScaleFactor: {$t: 1}
+      imageScaleFactor: {$t: "1.0"}
       groupObjects: {$t: false}
       groupSize: {$t: 1}
     genericCityObjectBalloon:
@@ -826,21 +829,21 @@ project:
         lastUsedPath: {}
       balloonContentTemplateFile: {}
       balloonContentInSeparateFile: {$t: false}
-    exportAsKmz: {$t: true}
+    exportAsKmz: {$t: false}
     showBoundingBox: {$t: true}
     showTileBorders: {$t: true}
-    autoTileSideLength: {$t: 125}
+    autoTileSideLength: {$t: "125.0"}
     oneFilePerObject: {$t: false}
-    singleObjectRegionSize: {$t: 50}
+    singleObjectRegionSize: {$t: "50.0"}
     viewRefreshMode: {$t: onRegion}
-    viewRefreshTime: {$t: 1}
+    viewRefreshTime: {$t: "1.0"}
     writeJSONFile: {$t: false}
     writeJSONPFile: {$t: false}
     callbackNameJSONP: {}
-    appearanceTheme: {$t: none}
+    appearanceTheme: {$t: rgbTexture}
     altitudeMode: {$t: absolute}
     altitudeOffsetMode: {$t: generic_attribute}
-    altitudeOffsetValue: {$t: 0}
+    altitudeOffsetValue: {$t: "0.0"}
     callGElevationService: {$t: true}
     useOriginalZCoords: {$t: false}
     system:
@@ -897,4 +900,32 @@ project:
             username: {}
             password: {}
             savePassword: {$t: false}
-  extensions: {}
+  extensions:
+    plugin:
+      config:
+        xmlns:xsi: "http://www.w3.org/2001/XMLSchema-instance"
+        xsi:type: "match:MatchingMegingConfigType"
+        match:candidateBuildings:
+          match:lodProjection:
+            $t: "3"
+          match:overlap:
+            $t: "0.800000011920929"
+          match:lodGeometry:
+            $t: "3"
+        match:masterBuildings:
+          match:lodProjection:
+            $t: "2"
+          match:overlap:
+            $t: "0.800000011920929"
+          match:lodGeometry:
+            $t: "3"
+        match:matching:
+          match:lineage: {}
+        match:merging:
+          match:gmlNameMode:
+            $t: "append"
+          match:deleteMode:
+            $t: "merge"
+          match:lineage: {}
+        match:deleteBuildings:
+          match:lineage: {}
