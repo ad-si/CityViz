@@ -2,12 +2,22 @@
 
 var fs = require('fs'),
 	yaml = require('js-yaml'),
-	parser = require('xml2json'),
 
-	projectConfig = fs.readFileSync('./config.yaml'),
-	xml = parser.toXml(yaml.safeLoad(projectConfig))
+	cityNode = require('./modules/3dcitynode'),
+	projectConfigYaml = fs.readFileSync('./config.yaml'),
+	options = {
+		format: 'kml' // Default xml
+	}
 
 
-fs.writeFileSync('./build/tempConfig.xml', xml)
+options.config = yaml.safeLoad(projectConfigYaml)
 
-
+cityNode.getFromDb(
+	options,
+	function (error, buffer) {
+		if (error)
+			console.error(error)
+		else
+			console.log(buffer.toString('utf8'))
+	}
+)
