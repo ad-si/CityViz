@@ -6,21 +6,26 @@ Clone repository from [projects.hpi3d.de](https://projects.hpi3d.de) website lik
 `$ git clone https://projects.hpi3d.de/git/06-webgl-client`
 
 If you get a warning about SSL problems try following:
-´git -c http.sslVerify=false clone https://projects.hpi3d.de/git/06-webgl-client`
+`git -c http.sslVerify=false clone https://projects.hpi3d.de/git/06-webgl-client`
 
 
 ## Installation of 3DCityDB and postgres
 
 On Mac:
 
-1. Install [postgresapp](http://postgresapp.com) (Already contains PostGIS plugin which otherwise would have to be installed as well.)
+1. Install [postgresapp](http://postgresapp.com)
+	(Already contains PostGIS plugin which otherwise would have to be installed as well.)
 2. Download [3DCityDB](http://3dcitydb.org/3dcitydb/downloads)
 3. Run setup.jar to install 3DCityDB
-4. Create a new database in postgres and enable the postgis extension for it. (You can use [pagadmin](http://pgadmin.org) to inspect and interact with your database.)
+4. 
+	- Create a new database in postgres
+		(You can use [pagadmin](http://pgadmin.org) to inspect and interact with your database.)
+	- Enable the postgis extension for it by right clicking Extensions > name: postgis > OK.
 4. Open `/Applications/3DCityDB-Importer-Exporter/3dcitydb/postgis/CREATE_DB.sh` with a text-editor and adapt the exported variables to your settings.
 	Then create the necessary schemas and tables by executing this shell-script.
-6. Open the 3D City Database Importer/Exporter and connect to the database.
-	(By executing `$ /Applications/3DCityDB-Importer-Exporter/3DCityDB-Importer-Exporter.sh`)
+6. Open the 3D City Database Importer/Exporter by executing
+	`$ /Applications/3DCityDB-Importer-Exporter/3DCityDB-Importer-Exporter.sh`
+	and connect to the database
 7. Import your files with the Importer/Exporter.
 
 
