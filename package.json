@@ -17,6 +17,7 @@
   "dependencies": {
     "cesiumjs": "^1.4.0",
     "js-yaml": "^3.2.5",
+    "temp": "^0.8.1",
     "three": "^0.69.0",
     "xml2json": "^0.5.1"
   }
