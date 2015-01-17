@@ -19,7 +19,7 @@ THREE.glTFLoader = function (showStatus) {
 THREE.glTFLoader.prototype = new THREE.Loader();
 THREE.glTFLoader.prototype.constructor = THREE.glTFLoader;
 
-THREE.glTFLoader.prototype.load = function( url, callback ) {
+THREE.glTFLoader.prototype.load = function( url, callback, jsonData ) {
 	
 	var theLoader = this;
 	// Utilities
@@ -560,7 +560,11 @@ THREE.glTFLoader.prototype.load = function( url, callback ) {
         				path : description.path,
         		};
 
-                var shaderContext = new ShaderContext(entryID, description.path);
+                var shaderContext  
+				if(typeof(description.path) !== 'undefined')
+					shaderContext = new ShaderContext(entryID, description.path)
+				else
+					shaderContext = new ShaderContext(entryID, description.uri)
 
                 theLoader.shadersRequested++;
         		THREE.GLTFLoaderUtils.getFile(shaderRequest, shaderDelegate, shaderContext);
@@ -1511,10 +1515,15 @@ THREE.glTFLoader.prototype.load = function( url, callback ) {
 
     var self = this;
     
-    var loader = Object.create(ThreeGLTFLoader);
-    loader.initWithPath(url);
+    var loader = Object.create(ThreeGLTFLoader)
+
+    if(typeof(jsonData) !== 'undefined')
+		loader.initWithJSON(jsonData, "")
+	else
+		loader.initWithPath(url)
+
     loader.load(new Context(rootObj, 
-    					function(obj) {
+    				function(obj) {
     					}), 
     			null);
 
