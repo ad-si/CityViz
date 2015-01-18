@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Written by 3D City Database Importer/Exporter, version "1.6-postgis-b1" -->
+<!-- IGG, Technische Universität Berlin, Germany, http://www.igg.tu-berlin.de/ -->
+<kml xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0" xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gx="http://www.google.com/kml/ext/2.2">
+  <Document>
+    <name>colladaTemp_collada</name>
+    <open>false</open>
+    <Placemark id="test">
+      <name>test</name>
+      <Model>
+        <altitudeMode>absolute</altitudeMode>
+        <Location>
+          <longitude>14.4769606</longitude>
+          <latitude>56.2539646</latitude>
+          <altitude>71.0</altitude>
+        </Location>
+        <Orientation>
+          <heading>0.7003</heading>
+        </Orientation>
+        <Link>
+          <href>testModel/testModel.dae</href>
+        </Link>
+      </Model>
+    </Placemark>
+  </Document>
+</kml>
