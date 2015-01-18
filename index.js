@@ -8,7 +8,9 @@ var fs = require('fs'),
 	projectConfigYaml = fs.readFileSync('./config.yaml'),
 	options = {
 		format: 'kml',
-		outputFile: path.join('./build', 'colladaTemp.kml')
+		outputFile: path.join('./build', 'colladaTemp.kml'),
+		id: 'UUID_b960fd73-ae5b-4259-b6cf-768abd303c7d',
+		ids: null
 	}
 
 

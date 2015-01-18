@@ -188,7 +188,8 @@ project:
       mode: {$t: simple}
       simple:
         gmlIds:
-          gmlId: {$t: UUID_b960fd73-ae5b-4259-b6cf-768abd303c7d}
+          gmlId:
+            - $t: UUID_b960fd73-ae5b-4259-b6cf-768abd303c7d
       complex:
         featureCount:
           active: false

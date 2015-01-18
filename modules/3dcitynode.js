@@ -45,6 +45,15 @@ module.exports.getFromDb = function (options, callback) {
 			options[key] = options[key] || defaults[key]
 
 
+	if (options.id)
+		options.config.kmlExport.filter.simple.gmlIds.gmlId = {$t: options.id}
+
+	else if (options.ids)
+		options.config.kmlExport.filter.simple.gmlIds.gmlId = options
+			.ids.map(function (id) {
+				return {$t: id}
+			})
+
 	configFile = temp.path()
 
 	fs.writeFileSync(
@@ -98,7 +107,7 @@ module.exports.getFromDb = function (options, callback) {
 				})
 
 			fsp
-				.move(actualExportFile, exportFile)
+				.move(actualExportFile, exportFile, {clobber: true})
 				.then(function () {
 					return fsp.readFile(exportFile)
 				})
@@ -111,7 +120,9 @@ module.exports.getFromDb = function (options, callback) {
 						return fs.remove(exportFile)
 				})
 				.catch(function (error) {
-					setTimeout(function(){throw error},0)
+					setTimeout(function () {
+						throw error
+					}, 0)
 				})
 		}
 	)
