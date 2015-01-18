@@ -1,4 +1,9 @@
+require('es6-promise').polyfill()
+
 var fs = require('fs'),
+	fsp = require('fs-promise'),
+	fse = require('fs-extra'),
+	path = require('path'),
 	temp = require('temp'),
 	childProcess = require('child_process'),
 
@@ -24,6 +29,7 @@ module.exports.getFromDb = function (options, callback) {
 			import: [], // Array of directories and files to import
 			format: 'xml' // xml, kml, kmz
 		},
+		actualExportFile,
 		shellCommand,
 		configFile,
 		exportFile,
@@ -40,15 +46,19 @@ module.exports.getFromDb = function (options, callback) {
 
 
 	configFile = temp.path()
+
 	fs.writeFileSync(
 		configFile,
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		parser.toXml(options.config)
 	)
 
-	exportFile = temp.path()
-
-	fs.closeSync(fs.openSync(exportFile, 'w'))
+	exportFile = path.resolve(__dirname, '..', options.outputFile) || temp.path()
+	actualExportFile = path.join(
+		path.dirname(exportFile),
+		path.basename(exportFile, path.extname(exportFile)) +
+		'_collada.' + options.format
+	)
 
 	javaPath = process.env.JAVA_HOME ?
 	           process.env.JAVA_HOME + '/bin/java' :
@@ -65,12 +75,14 @@ module.exports.getFromDb = function (options, callback) {
 		(options.format === 'xml') ? '-export' : '-kmlExport',
 		exportFile,
 		'-config ' + configFile
-	]
+	].join(' ')
 
 	process.chdir('/Applications/3DCityDB-Importer-Exporter')
 
+	console.log(shellCommand)
+
 	childProcess.exec(
-		shellCommand.join(' '),
+		shellCommand,
 		function (error, stdout, stderr) {
 
 			if (error)
@@ -79,26 +91,28 @@ module.exports.getFromDb = function (options, callback) {
 			console.log(stdout.toString())
 			console.error(stderr.toString())
 
-			fs.unlink(configFile, function (error) {
-				if (error && error.code !== 'ENOENT')
+			fsp
+				.remove(configFile)
+				.catch(function (error) {
 					throw error
-			})
+				})
 
-			fs.readFile(
-				exportFile + '_collada.' + options.format, {},
-				function (error, data) {
-
-					if (error)
-						return callback(error)
-					else
+			fsp
+				.move(actualExportFile, exportFile)
+				.then(function () {
+					return fsp.readFile(exportFile)
+				})
+				.then(function (data) {
+					if (!options.outputFile)
 						callback(null, data)
-				}
-			)
-
-			fs.unlink(exportFile, function (error) {
-				if (error && error.code !== 'ENOENT')
-					throw error
-			})
+				})
+				.then(function () {
+					if (!options.outputFile)
+						return fs.remove(exportFile)
+				})
+				.catch(function (error) {
+					setTimeout(function(){throw error},0)
+				})
 		}
 	)
 }
