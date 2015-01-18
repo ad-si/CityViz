@@ -7,7 +7,8 @@ var fs = require('fs'),
 	temp = require('temp'),
 	childProcess = require('child_process'),
 
-	parser = require('xml2json')
+	parser = require('xml2json'),
+	collada2gltf = require('../modules/collada2gltf')
 
 
 // TODO: Return promise when no callback is given
@@ -46,13 +47,24 @@ module.exports.getFromDb = function (options, callback) {
 
 
 	if (options.id)
-		options.config.kmlExport.filter.simple.gmlIds.gmlId = {$t: options.id}
+		options.config
+			.project
+			.kmlExport
+			.filter
+			.simple
+			.gmlIds
+			.gmlId = {$t: options.id}
 
 	else if (options.ids)
-		options.config.kmlExport.filter.simple.gmlIds.gmlId = options
-			.ids.map(function (id) {
-				return {$t: id}
-			})
+		options.config
+			.project
+			.kmlExport
+			.filter
+			.simple
+			.gmlIds
+			.gmlId = options.ids.map(function (id) {
+			return {$t: id}
+		})
 
 	configFile = temp.path()
 
@@ -103,7 +115,9 @@ module.exports.getFromDb = function (options, callback) {
 			fsp
 				.remove(configFile)
 				.catch(function (error) {
-					throw error
+					setTimeout(function () {
+						throw error
+					}, 0)
 				})
 
 			fsp
