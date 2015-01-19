@@ -53,13 +53,13 @@ module.exports = function (options, callback) {
 		'-f ' + options.inputFile,
 		'-o ' + exportFile,
 		options.outputBundle ? '-b ' + options.outputBundle : '',
-		options.exportAnimations ? '-a ' + options.exportAnimations : '',
+		//options.exportAnimations ? '-a ' + options.exportAnimations : '',
 		options.invertTransparency ? '-i' : '',
 		options.exportPassDetails ? '-d' : '',
 		options.showProgress ? '-p' : '',
-		options.defaultLighting ? '-l ' + options.defaultLighting : '',
-		options.compressionType ? '-c ' + options.compressionType : '',
-		options.compressionMode ? '-m ' + options.compressionMode : '',
+		//options.defaultLighting ? '-l ' + options.defaultLighting : '',
+		//options.compressionType ? '-c ' + options.compressionType : '',
+		//options.compressionMode ? '-m ' + options.compressionMode : '',
 		options.experimentalMode ? '-s' : '',
 		options.verbose ? '-r' : ''
 	].join(' ')

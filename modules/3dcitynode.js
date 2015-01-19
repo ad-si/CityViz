@@ -7,8 +7,7 @@ var fs = require('fs'),
 	temp = require('temp'),
 	childProcess = require('child_process'),
 
-	parser = require('xml2json'),
-	collada2gltf = require('../modules/collada2gltf')
+	parser = require('xml2json')
 
 
 // TODO: Return promise when no callback is given
@@ -128,6 +127,8 @@ module.exports.getFromDb = function (options, callback) {
 				.then(function (data) {
 					if (!options.outputFile)
 						callback(null, data)
+					else
+						callback()
 				})
 				.then(function () {
 					if (!options.outputFile)

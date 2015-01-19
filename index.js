@@ -6,22 +6,36 @@ var fs = require('fs'),
 
 	cityNode = require('./modules/3dcitynode'),
 	projectConfigYaml = fs.readFileSync('./config.yaml'),
+	collada2gltf = require('./modules/collada2gltf'),
+	fileName = 'building',
 	options = {
 		format: 'kml',
-		outputFile: path.join('./build', 'colladaTemp.kml'),
+		outputFile: path.join('./build', fileName + '.kml'),
 		id: 'UUID_b960fd73-ae5b-4259-b6cf-768abd303c7d',
-		ids: null
+		ids: null,
+		config: yaml.safeLoad(projectConfigYaml)
 	}
 
 
-options.config = yaml.safeLoad(projectConfigYaml)
-
 cityNode.getFromDb(
 	options,
-	function (error, buffer) {
+	function (error) {
 		if (error)
-			console.error(error)
-		else
-			console.log(buffer.toString('utf8'))
+			throw error
+
+		collada2gltf(
+			{
+				inputFile: path.join(
+					__dirname, 'build', options.id, options.id + '.dae'
+				),
+				outputFile: path.join(
+					__dirname, 'build', fileName + '.gltf')
+			},
+			function (error) {
+				if(error)
+					throw error
+				console.log('test')
+			}
+		)
 	}
 )
