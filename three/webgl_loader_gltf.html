@@ -226,7 +226,7 @@
                 status.innerHTML = "Loading...";
 
 				if(index > 1){
-				$.get("http://localhost:8080", function(data){
+				$.get("http://localhost:8080?uuid=UUID_b960fd73-ae5b-4259-b6cf-768abd303c7d", function(data){
 						
 					gltf = JSON.parse(JSON.parse(data)[0].gltf)
                 	
