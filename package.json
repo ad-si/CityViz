@@ -1,8 +1,9 @@
 {
-  "name": "CityViz",
+  "name": "cityviz",
   "version": "0.1.0",
   "description": "Interactive real time WebGL powered 3d rendering of Rotterdam ",
   "main": "server.js",
+  "bin": "bin/cli.js",
   "repository": {
     "type": "git",
     "url": "https://projects.hpi3d.de/git/06-webgl-client"
@@ -16,6 +17,7 @@
   "license": "All rights reserved",
   "dependencies": {
     "cesiumjs": "^1.4.0",
+    "commander": "^2.6.0",
     "es6-promise": "^2.0.1",
     "fs-extra": "^0.14.0",
     "fs-promise": "^0.3.1",
