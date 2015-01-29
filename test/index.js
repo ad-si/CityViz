@@ -4,9 +4,9 @@ var fs = require('fs'),
 	path = require('path'),
 	yaml = require('js-yaml'),
 
-	cityNode = require('./modules/3dcitynode'),
+	cityNode = require('./../modules/cityNode/index'),
 	projectConfigYaml = fs.readFileSync('./config.yaml'),
-	collada2gltf = require('./modules/collada2gltf'),
+	collada2gltf = require('./../modules/collada2gltf/index'),
 	fileName = 'building',
 	options = {
 		format: 'kml',
@@ -29,7 +29,8 @@ cityNode.getFromDb(
 					__dirname, 'build', options.id, options.id + '.dae'
 				),
 				outputFile: path.join(
-					__dirname, 'build', fileName + '.gltf')
+					__dirname, 'build', fileName + '.gltf'),
+				compressionMode: 'binary'
 			},
 			function (error) {
 				if(error)
