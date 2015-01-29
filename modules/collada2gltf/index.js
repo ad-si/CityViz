@@ -9,7 +9,6 @@ var fs = require('fs'),
 
 module.exports = function (options, callback) {
 
-	var binPath;
 	var defaults = {
 			binPath: '',
 			format: 'gltf',
@@ -30,6 +29,7 @@ module.exports = function (options, callback) {
 		},
 		shellCommand,
 		exportFile,
+		binPath,
 		key
 
 
@@ -41,6 +41,8 @@ module.exports = function (options, callback) {
 
 
 	exportFile = options.outputFile || temp.path()
+
+	options.outputBundle = exportFile + '-bundle'
 
 
 	binPath = options.binPath ||
@@ -57,9 +59,11 @@ module.exports = function (options, callback) {
 		options.invertTransparency ? '-i' : '',
 		options.exportPassDetails ? '-d' : '',
 		options.showProgress ? '-p' : '',
-		//options.defaultLighting ? '-l ' + options.defaultLighting : '',
-		//options.compressionType ? '-c ' + options.compressionType : '',
-		//options.compressionMode ? '-m ' + options.compressionMode : '',
+		options.defaultLighting ? '-l ' + options.defaultLighting : '',
+		options.compressionType !== 'Open3DGC' ?
+		'-c ' + options.compressionType : '',
+		options.compressionMode !== 'ascii' ?
+		'-m ' + options.compressionMode : '',
 		options.experimentalMode ? '-s' : '',
 		options.verbose ? '-r' : ''
 	].join(' ')
@@ -70,11 +74,11 @@ module.exports = function (options, callback) {
 		shellCommand,
 		function (error, stdout, stderr) {
 
-			if (error)
-				return callback(error)
-
 			console.log(stdout.toString())
 			console.error(stderr.toString())
+
+			if (error)
+				return callback(error)
 
 			// fsp
 			// 	.remove(configFile)

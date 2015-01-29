@@ -23,5 +23,8 @@
     "temp": "^0.8.1",
     "three": "^0.69.0",
     "xml2json": "^0.5.1"
+  },
+  "scripts": {
+    "test": "node ./test/index.js"
   }
 }

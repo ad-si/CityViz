@@ -105,11 +105,11 @@ module.exports.getFromDb = function (options, callback) {
 		shellCommand,
 		function (error, stdout, stderr) {
 
-			if (error)
-				return callback(error)
-
 			console.log(stdout.toString())
 			console.error(stderr.toString())
+
+			if (error)
+				return callback(error)
 
 			fsp
 				.remove(configFile)
