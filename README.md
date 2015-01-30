@@ -22,7 +22,8 @@ On Mac:
 		(You can use [pagadmin](http://pgadmin.org) to inspect and interact with your database.)
 	- Enable the postgis extension for it by right clicking Extensions > name: postgis > OK.
 4. Open `/Applications/3DCityDB-Importer-Exporter/3dcitydb/postgis/CREATE_DB.sh` with a text-editor and adapt the exported variables to your settings.
-	Then create the necessary schemas and tables by executing this shell-script.
+
+	Then create the necessary schemas and tables by executing this shell-script. (For the Rotterdam model use SRID 28992 and name EPSG:28992)
 6. Open the 3D City Database Importer/Exporter by executing
 	`$ /Applications/3DCityDB-Importer-Exporter/3DCityDB-Importer-Exporter.sh`
 	and connect to the database
