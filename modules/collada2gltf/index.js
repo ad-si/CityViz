@@ -88,7 +88,10 @@ module.exports = function (options, callback) {
 			// 		}, 0)
 			// 	})
 
-			if (!options.outputFile)
+			if (options.outputFile)
+				callback()
+
+			else
 				fsp
 					.readFile(exportFile)
 					.then(function (data) {
