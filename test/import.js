@@ -21,12 +21,18 @@ var fs = require('fs'),
 	}
 
 
-cityNode.import(
-	options,
-	function (error) {
-		if (error)
-			throw error
+describe('import', function () {
+	it.skip('should import', function (done) {
 
-		console.log('Successfully imported CityGML files.')
-	}
-)
+		cityNode.import(
+			options,
+			function (error) {
+				if (error)
+					throw error
+
+				console.log('Successfully imported CityGML files.')
+				done()
+			}
+		)
+	})
+})

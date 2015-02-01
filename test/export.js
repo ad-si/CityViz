@@ -14,7 +14,7 @@ var fs = require('fs'),
 	options = {
 		format: 'kml',
 		id: 'UUID_b960fd73-ae5b-4259-b6cf-768abd303c7d',
-		outputFile: path.resolve(__dirname, '../build', fileName + '.kml'),
+		outputFile: path.resolve(__dirname, '..', 'build', fileName + '.kml'),
 		//outputFiles: [
 		//	path.resolve(__dirname, '../build', fileName + '1.kml'),
 		//	path.resolve(__dirname, '../build', fileName + '2.kml')
@@ -27,27 +27,39 @@ var fs = require('fs'),
 	}
 
 
-cityNode.getFromDb(
-	options,
-	function (error) {
-		if (error)
-			throw error
+describe('Export & Conversion', function () {
 
-		collada2gltf(
-			{
-				inputFile: path.resolve(
-					__dirname, '../build', options.id, options.id + '.dae'
-				),
-				outputFile: path.join(
-					__dirname, '../build', fileName + '.gltf'
-				),
-				compressionMode: 'binary'
-			},
+	it('should export a collada file', function (done) {
+
+		cityNode.getFromDb(
+			options,
 			function (error) {
 				if (error)
 					throw error
-				console.log('test')
-			}
-		)
-	}
-)
+
+				done()
+			})
+	})
+
+	it('should convert the collada file to gltf', function (done) {
+
+			collada2gltf(
+				{
+					inputFile: path.resolve(
+						__dirname, '../build', options.id, options.id + '.dae'
+					),
+					outputFile: path.join(
+						__dirname, '../build', fileName + '.gltf'
+					),
+					compressionMode: 'binary'
+				},
+				function (error) {
+					if (error)
+						throw error
+
+					done()
+				}
+			)
+		}
+	)
+})
