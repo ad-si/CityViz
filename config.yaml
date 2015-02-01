@@ -61,7 +61,7 @@ project:
           active: false
           value: {}
         featureClass:
-          active: false
+          active: true
           building: {$t: true}
           waterBody: {$t: true}
           landUse: {$t: true}
@@ -183,7 +183,7 @@ project:
     path:
       mode: {$t: lastUsed}
       standardPath: {}
-      lastUsedPath: {$t: /Volumes/HDD/hpi/cityViz}
+      lastUsedPath: {}
     filter:
       mode: {$t: simple}
       simple:
