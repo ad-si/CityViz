@@ -17,7 +17,7 @@ On Mac:
 	(Already contains PostGIS plugin which otherwise would have to be installed as well.)
 2. Download [3DCityDB](http://3dcitydb.org/3dcitydb/downloads)
 3. Run setup.jar to install 3DCityDB
-4. 
+4.
 	- Create a new database in postgres
 		(You can use [pagadmin](http://pgadmin.org) to inspect and interact with your database.)
 	- Enable the postgis extension for it by right clicking Extensions > name: postgis > OK.
@@ -30,27 +30,34 @@ On Mac:
 7. Import your files with the Importer/Exporter.
 
 
+## Usage
+
+First you need to set the database settings in `config.yaml` according to your environment.
+In order to get an overview over available commands run the cli script:
+`$ node ./bin/cli.js --help`
+
+
 ## Links
 
-- [github.com/rmx/collada-converter](https://github.com/rmx/collada-converter) - A library for converting COLLADA files to a format suitable for WebGL
-- https://github.com/rmx/threejs-collada
-- https://github.com/KhronosGroup/glTF
-- http://f4map.com
-- http://lo-th.github.io/3d.city
-- https://github.com/mrdoob/three.js/issues/5708
-- https://arcgis.com - Gives everyone in your organization the ability to discover, use, make and share maps.
+- [rmx/collada-converter](https://github.com/rmx/collada-converter) - A library for converting COLLADA files to a format suitable for WebGL
+- [rmx/threejs-collada](https://github.com/rmx/threejs-collada)
+- [KhronosGroup/glTF](https://github.com/KhronosGroup/glTF)
+- [f4map](http://f4map.com)
+- [lo-th.github.io/3d.city](http://lo-th.github.io/3d.city)
+- [https://github.com/mrdoob/three.js/issues/5708](mrdoob/three.js/issues/5708)
+- [arcgis](https://arcgis.com) - Gives everyone in your organization the ability to discover, use, make and share maps.
 
 
 ### Viewer
 
-- http://www.glge.org/
-- http://www.senchalabs.org/philogl/demos.html
-- http://scenejs.org
-- https://github.com/mapbox/mapbox-gl-js
-- https://github.com/evanw/lightgl.js
+- [glge](http://glge.org)
+- [senchalabs.org/philogl/demos](http://senchalabs.org/philogl/demos.html)
+- [scenejs](http://scenejs.org)
+- [mapbox/mapbox-gl-js](https://github.com/mapbox/mapbox-gl-js)
+- [evanw/lightgl.js](https://github.com/evanw/lightgl.js)
 
 
 ### WebGL Resources
 
-http://learningwebgl.com
-http://webacademy.com
+- [learningwebgl.com](http://learningwebgl.com)
+- [webacademy.com](http://learningwebgl.com)
