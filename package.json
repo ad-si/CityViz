@@ -23,12 +23,13 @@
     "fs-extra": "^0.14.0",
     "fs-promise": "^0.3.1",
     "js-yaml": "^3.2.5",
+    "mocha": "^2.1.0",
     "pg": "^4.2.0",
     "temp": "^0.8.1",
     "three": "^0.69.0",
     "xml2json": "^0.5.1"
   },
   "scripts": {
-    "test": "node ./test/export.js"
+    "test": "./node_modules/.bin/mocha -t 30s"
   }
 }
