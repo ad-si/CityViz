@@ -12,7 +12,7 @@ var fs = require('fs'),
 	),
 
 	options = {
-		importDir: path.join(__dirname, 'fixtures', 'cityGml'),
+		importFile: path.join(__dirname, 'fixtures', 'cityGml'),
 		//importFiles: [
 		//	path.resolve(__dirname, '../build', fileName + '1.kml'),
 		//	path.resolve(__dirname, '../build', fileName + '2.kml')
@@ -22,7 +22,7 @@ var fs = require('fs'),
 
 
 describe('import', function () {
-	it.skip('should import', function (done) {
+	it('should import', function (done) {
 
 		cityNode.import(
 			options,

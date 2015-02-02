@@ -1,8 +1,9 @@
 #! /usr/bin/env node
 
 var program = require('commander'),
+
 	packageData = require('../package.json'),
-	cityNode = require('modules/cityNode')
+	cityNode = require('../modules/cityNode')
 
 
 program

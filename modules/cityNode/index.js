@@ -14,11 +14,13 @@ var fs = require('fs'),
 	applyDefaults = require('../applyDefaults'),
 
 	javaPath = process.env.JAVA_HOME ?
-	           process.env.JAVA_HOME + '/bin/java' :
-	           'java'
+	           process.env.JAVA_HOME + '/bin/java' : 'java',
+	programDirectory = '/Applications/3DCityDB-Importer-Exporter',
+	executable = 'lib/3dcitydb-impexp.jar'
 
 
-function executeShellCommand (shellCommand, options, exportFile, actualExportFile, callback) {
+function executeShellCommand (shellCommand, options, exportFile,
+                              actualExportFile, callback) {
 
 	var configFile = temp.path()
 
@@ -28,11 +30,10 @@ function executeShellCommand (shellCommand, options, exportFile, actualExportFil
 		parser.toXml(options.config)
 	)
 
-	process.chdir('/Applications/3DCityDB-Importer-Exporter')
-
 	shellCommand = shellCommand + ' -config ' + configFile
 
-	//console.log(shellCommand)
+	process.chdir(programDirectory)
+	console.log('Changed directory to ' + programDirectory)
 
 	childProcess.exec(
 		shellCommand,
@@ -60,26 +61,30 @@ function executeShellCommand (shellCommand, options, exportFile, actualExportFil
 					}, 0)
 				})
 
-			fsp
-				.move(actualExportFile, exportFile, {clobber: true})
-				.then(function () {
-					return fsp.readFile(exportFile)
-				})
-				.then(function (data) {
-					if (!options.outputFile)
-						callback(null, data)
-					else
-						callback()
-				})
-				.then(function () {
-					if (!options.outputFile)
-						return fs.remove(exportFile)
-				})
-				.catch(function (error) {
-					setTimeout(function () {
-						throw error
-					}, 0)
-				})
+			if (exportFile && actualExportFile) {
+				fsp
+					.move(actualExportFile, exportFile, {clobber: true})
+					.then(function () {
+						return fsp.readFile(exportFile)
+					})
+					.then(function (data) {
+						if (!options.outputFile)
+							callback(null, data)
+						else
+							callback()
+					})
+					.then(function () {
+						if (!options.outputFile)
+							return fs.remove(exportFile)
+					})
+					.catch(function (error) {
+						setTimeout(function () {
+							throw error
+						}, 0)
+					})
+			}
+			else
+				callback()
 		}
 	)
 }
@@ -97,27 +102,55 @@ module.exports.exportSync = function (midiBuffer, options) {
 
 
 module.exports.import = function (options, callback) {
-	var defaults = {
-		config: {}, // Config file containing project settings
-		import: [], // Array of directories and files to import
-	}
 
-	if (options.id)
-		options.config
-			.project
-			.kmlExport
-			.filter
-			.simple
-			.gmlIds
-			.gmlId = {$t: options.id}
+	var defaults = {
+			test: 'test'
+		},
+		shellCommand,
+		imports
+
+
+	options = applyDefaults(defaults, options)
+
+	if (options.importFile)
+		imports = options.importFile
+
+	else if (options.importFiles)
+		imports = options.importFiles.join(' ')
+
+	else
+		callback(new Error('Specify an import file!'))
+
+	//options.config
+	//		.project
+	//		.import
+	//		.path
+	//		.standardPath = {$t: __dirname + 'citymodel'}
+
+	shellCommand = [
+		javaPath,
+		'-jar',
+		'-Xms128m',
+		'-Xmx768m',
+		executable,
+		'-shell',
+		'-import',
+		imports
+	].join(' ')
+
+	executeShellCommand(
+		shellCommand,
+		options,
+		null,
+		null,
+		callback
+	)
 }
 
 
 module.exports.getFromDb = function (options, callback) {
 
 	var defaults = {
-			config: {}, // Config file containing project settings
-			import: [], // Array of directories and files to import
 			format: 'xml' // xml, kml, kmz
 		},
 		actualExportFile,
@@ -125,7 +158,7 @@ module.exports.getFromDb = function (options, callback) {
 		exportFile
 
 
-	applyDefaults(defaults, options)
+	options = applyDefaults(defaults, options)
 
 	if (options.id)
 		options.config
@@ -160,7 +193,7 @@ module.exports.getFromDb = function (options, callback) {
 		'-jar',
 		'-Xms128m',
 		'-Xmx768m',
-		'lib/3dcitydb-impexp.jar',
+		executable,
 		'-shell',
 		(options.format === 'xml') ? '-export' : '-kmlExport',
 		exportFile

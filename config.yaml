@@ -36,9 +36,9 @@ project:
       updatingPerson: {}
       reasonForUpdate: {}
     path:
-      mode: {$t: lastUsed}
-      standardPath: {}
-      lastUsedPath: {$t: /Volumes/HDD/hpi/cityViz/citymodel}
+      mode: {$t: standard}
+      standardPath: {} # Set in cityNode
+      lastUsedPath: {}
     gmlId:
       uuidMode: {$t: replace}
       keepGmlIdAsExternalReference: {$t: true}
@@ -104,7 +104,7 @@ project:
     path:
       mode: {$t: lastUsed}
       standardPath: {}
-      lastUsedPath: {$t: /Users/adrian/Desktop}
+      lastUsedPath: {}
     targetSRS: {$t: UUID_150cb923-85aa-4a10-b7a1-3f7fc5883cf2}
     address:
       exportMode: {$t: db}
@@ -188,8 +188,7 @@ project:
       mode: {$t: simple}
       simple:
         gmlIds:
-          gmlId:
-            # Set in index.js
+          gmlId: {} # Set in getFromDb()
       complex:
         featureCount:
           active: false
