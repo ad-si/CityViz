@@ -1,5 +1,7 @@
 #! /usr/bin/env node
 
+'use strict'
+
 var program = require('commander'),
 
 	packageData = require('../package.json'),
@@ -9,9 +11,14 @@ var program = require('commander'),
 program
 	.version(packageData.version)
 	.usage('<CityGML-file>|<directory with CityGML-files>')
+	.option('--drop-db', 'Drop the content of the database')
 	.parse(process.argv)
 
-if (program.args < 1) {
+
+if (program.dropDb)
+	cityNode.dropDatabase()
+
+else if (program.args.length < 1) {
 	program.help()
 }
 else {

@@ -10,13 +10,16 @@ var fs = require('fs'),
 	childProcess = require('child_process'),
 
 	parser = require('xml2json'),
+	pg = require('pg'),
 
 	applyDefaults = require('../applyDefaults'),
 
 	javaPath = process.env.JAVA_HOME ?
 	           process.env.JAVA_HOME + '/bin/java' : 'java',
 	programDirectory = '/Applications/3DCityDB-Importer-Exporter',
-	executable = 'lib/3dcitydb-impexp.jar'
+	executable = 'lib/3dcitydb-impexp.jar',
+	intitalDbConnectionString = 'postgres://adrian:cityviz@localhost/postgres',
+	dbConectionString = 'postgres://adrian:cityviz@localhost/cityViz'
 
 
 function executeShellCommand (shellCommand, options, exportFile,
@@ -98,6 +101,28 @@ module.exports.export = function (midiBuffer, options, callback) {
 module.exports.exportSync = function (midiBuffer, options) {
 	// TODO
 	return
+}
+
+
+module.exports.dropDatabase = function () {
+
+	// stackoverflow.com/questions/20813154/node-postgres-create-database
+
+	pg.connect(intitalDbConnectionString, function (error, client, done) {
+		if (error)
+			throw error
+
+		client.query(
+			'drop database if exists "cityViz"',
+			function (error, result) {
+				done()
+
+				if (error)
+					throw error
+
+				console.log(result)
+			})
+	})
 }
 
 
