@@ -1,20 +1,20 @@
 'use strict'
 
-var fs = require('fs'),
+var fse = require('fs-extra'),
 	path = require('path'),
 	yaml = require('js-yaml'),
 
 	cityNode = require(path.join('..', 'modules', 'cityNode')),
 	collada2gltf = require(path.join('..', 'modules', 'collada2gltf')),
 
-	projectConfigYaml = fs.readFileSync(
+	projectConfigYaml = fse.readFileSync(
 		path.resolve(__dirname, '../config.yaml')
 	),
 	fileName = 'building',
 	options = {
 		format: 'kml',
 		id: 'UUID_b960fd73-ae5b-4259-b6cf-768abd303c7d',
-		outputFile: path.resolve(__dirname, '..', 'build', fileName + '.kml'),
+		outputFile: path.join(__dirname, 'build', fileName + '.kml'),
 		//outputFiles: [
 		//	path.resolve(__dirname, '../build', fileName + '1.kml'),
 		//	path.resolve(__dirname, '../build', fileName + '2.kml')
@@ -29,7 +29,15 @@ var fs = require('fs'),
 
 describe('Export & Conversion', function () {
 
+	var buildDir = path.join(__dirname, 'build')
+
+	before(function () {
+		fse.ensureDirSync(buildDir)
+	})
+
 	it('should export a collada file', function (done) {
+
+		this.timeout('15s')
 
 		cityNode.getFromDb(
 			options,
@@ -46,10 +54,10 @@ describe('Export & Conversion', function () {
 			collada2gltf(
 				{
 					inputFile: path.resolve(
-						__dirname, '../build', options.id, options.id + '.dae'
+						__dirname, 'build', options.id, options.id + '.dae'
 					),
 					outputFile: path.join(
-						__dirname, '../build', fileName + '.gltf'
+						__dirname, 'build', fileName + '.gltf'
 					),
 					compressionMode: 'binary'
 				},
@@ -62,4 +70,8 @@ describe('Export & Conversion', function () {
 			)
 		}
 	)
+
+	after(function () {
+		fse.remove(buildDir)
+	})
 })

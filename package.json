@@ -30,6 +30,6 @@
     "xml2json": "^0.5.1"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha -t 30s"
+    "test": "./node_modules/.bin/mocha"
   }
 }

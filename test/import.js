@@ -24,6 +24,8 @@ var fs = require('fs'),
 describe('import', function () {
 	it('should import', function (done) {
 
+		this.timeout('15s')
+
 		cityNode.import(
 			options,
 			function (error) {
