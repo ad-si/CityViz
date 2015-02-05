@@ -11,14 +11,18 @@ var program = require('commander'),
 program
 	.version(packageData.version)
 	.usage('<CityGML-file>|<directory with CityGML-files>')
+	.option('--setup-db', 'Setup the database')
 	.option('--drop-db', 'Drop the content of the database')
 	.parse(process.argv)
 
 
-if (program.dropDb)
-	cityNode.dropDatabase()
+if (program.setupDb)
+	return cityNode.setupDatabase()
 
-else if (program.args.length < 1) {
+if (program.dropDb)
+	return cityNode.dropDatabase()
+
+if (program.args.length < 1) {
 	program.help()
 }
 else {

@@ -11,6 +11,7 @@ var fs = require('fs'),
 
 	parser = require('xml2json'),
 	pg = require('pg'),
+	pgQuery = require('pg-query'),
 
 	applyDefaults = require('../applyDefaults'),
 
@@ -18,8 +19,8 @@ var fs = require('fs'),
 	           process.env.JAVA_HOME + '/bin/java' : 'java',
 	programDirectory = '/Applications/3DCityDB-Importer-Exporter',
 	executable = 'lib/3dcitydb-impexp.jar',
-	intitalDbConnectionString = 'postgres://adrian:cityviz@localhost/postgres',
-	dbConectionString = 'postgres://adrian:cityviz@localhost/cityViz'
+	intitalDbString = 'postgres://adrian:cityviz@localhost/postgres',
+	dbString = 'postgres://adrian:cityviz@localhost/cityViz'
 
 
 function executeShellCommand (shellCommand, options, exportFile,
@@ -104,25 +105,33 @@ module.exports.exportSync = function (midiBuffer, options) {
 }
 
 
+module.exports.setupDatabase = function () {
+
+	pgQuery.connectionParameters = intitalDbString
+
+	pgQuery('create database "cityviz"')
+		.then(function () {
+			return pgQuery('create extension postgis')
+		})
+		.catch(function (error) {
+			console.error(error)
+		})
+}
+
+
 module.exports.dropDatabase = function () {
 
-	// stackoverflow.com/questions/20813154/node-postgres-create-database
+	pgQuery.connectionParameters = intitalDbString
 
-	pg.connect(intitalDbConnectionString, function (error, client, done) {
-		if (error)
-			throw error
+	pgQuery(
+		'drop database if exists "cityviz"',
+		function (error, rows, result) {
+			if (error)
+				throw error
 
-		client.query(
-			'drop database if exists "cityViz"',
-			function (error, result) {
-				done()
-
-				if (error)
-					throw error
-
-				console.log(result)
-			})
-	})
+			console.log(result)
+		}
+	)
 }
 
 
@@ -232,6 +241,7 @@ module.exports.getFromDb = function (options, callback) {
 		callback
 	)
 }
+
 
 module.exports.renderFileSync = function (filePath, options) {
 	// TODO
