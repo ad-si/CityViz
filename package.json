@@ -31,6 +31,13 @@
     "xml2json": "^0.5.1"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha"
+    "test": "./node_modules/.bin/mocha",
+    "install": "napa"
+  },
+  "napa": {
+    "3dcitydb": "3dcitydb/3dcitydb#8c84605409d19b4db01ba3154b62b7337c9104d4"
+  },
+  "devDependencies": {
+    "napa": "^1.2.0"
   }
 }
