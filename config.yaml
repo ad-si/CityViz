@@ -11,12 +11,12 @@ project:
     connections:
       connection:
         id: UUID_3dd87189-091e-4b93-a48e-45feb26b6b92
-        description: {$t: cityViz}
+        description: {$t: cityviz}
         server: {$t: localhost}
         port: {$t: 5432}
-        sid: {$t: cityViz}
-        user: {$t: adrian}
-        password: {$t: cityViz}
+        sid: {$t: cityviz}
+        user: {$t: cityviz}
+        password: {$t: cityviz}
         savePassword: {$t: true}
     activeConnection: {$t: "UUID_3dd87189-091e-4b93-a48e-45feb26b6b92"}
     updateBatching:
