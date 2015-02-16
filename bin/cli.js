@@ -2,10 +2,12 @@
 
 'use strict'
 
-var program = require('commander'),
+var path = require('path'),
+	program = require('commander'),
 
 	packageData = require('../package.json'),
-	cityNode = require('../modules/cityNode')
+	cityNode = require('../modules/cityNode'),
+	importPath
 
 
 program
@@ -26,5 +28,19 @@ if (program.args.length < 1) {
 	program.help()
 }
 else {
-	cityNode.import(program.args[0])
+
+	if (String(program.args[0])[0] === '/')
+		importPath = program.args[0]
+	else
+		importPath = path.join(process.cwd(), program.args[0])
+
+	cityNode.import(
+		{
+			importFile: importPath
+		},
+		function (error) {
+			if (error)
+				throw error
+		}
+	)
 }
