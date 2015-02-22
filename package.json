@@ -5,6 +5,7 @@
   "main": "server.js",
   "bin": {
     "cityviz": "cli/cityviz.js",
+    "citygml2gltf": "modules/citygml2gltf/cli/index.js"
   },
   "repository": {
     "type": "git",
