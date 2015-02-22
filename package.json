@@ -1,9 +1,11 @@
 {
   "name": "cityviz",
   "version": "0.1.0",
-  "description": "Interactive real time WebGL powered 3d rendering of Rotterdam ",
+  "description": "Interactive real time WebGL powered 3d rendering of Rotterdam",
   "main": "server.js",
-  "bin": "bin/cli.js",
+  "bin": {
+    "cityviz": "cli/cityviz.js",
+  },
   "repository": {
     "type": "git",
     "url": "https://projects.hpi3d.de/git/06-webgl-client"
@@ -13,7 +15,10 @@
     "3D",
     "city"
   ],
-  "author": "Adrian Sieber, Stephan Detje",
+  "contributors": [
+    "Adrian Sieber",
+    "Stephan Detje"
+  ],
   "license": "All rights reserved",
   "dependencies": {
     "3dcitydb-impexp": "adius/3dcitydb-impexp#177db59",
