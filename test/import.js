@@ -21,19 +21,18 @@ var fs = require('fs'),
 	}
 
 
-describe('import', function () {
+describe('Import', function () {
 	it('should import', function (done) {
 
-		this.timeout('15s')
+		this.timeout('150s')
 
 		cityNode.import(
 			options,
 			function (error) {
 				if (error)
-					throw error
-
-				console.log('Successfully imported CityGML files.')
-				done()
+					done(error)
+				else
+					done()
 			}
 		)
 	})

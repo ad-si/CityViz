@@ -10,23 +10,51 @@ var fs = require('fs'),
 	childProcess = require('child_process'),
 
 	parser = require('xml2json'),
+	yaml = require('js-yaml'),
 	pg = require('pg'),
 	pgQuery = require('pg-query'),
 
 	applyDefaults = require('../applyDefaults'),
+	packageFile = require('../../package.json'),
 
 	javaPath = process.env.JAVA_HOME ?
 	           process.env.JAVA_HOME + '/bin/java' : 'java',
 	programDirectory = '/Applications/3DCityDB-Importer-Exporter',
-	executable = 'lib/3dcitydb-impexp.jar',
-	intitalDbString = 'postgres://adrian:cityviz@localhost/postgres',
-	dbString = 'postgres://adrian:cityviz@localhost/cityViz'
+	importExportExecutable = path.resolve(
+		__dirname, '../../node_modules/3dcitydb-importer-exporter' +
+		           '/lib/3dcitydb-impexp.jar'
+	),
+	dbConfig = {
+		port: 5432,
+		host: 'localhost',
+		user: 'cityviz',
+		db: 'cityviz',
+		srid: 28992
+	},
+	intitalDbString = 'postgres://' + process.env.USER + '@localhost/template1',
+	dbString = 'postgres://cityviz:cityviz@localhost/cityviz',
+	projectConfig = yaml.safeLoad(
+		fs.readFileSync(
+			path.resolve(__dirname, '../../config.yaml')
+		)
+	)
 
 
-function executeShellCommand (shellCommand, options, exportFile,
+function executeShellCommand (additionalArguments, options, exportFile,
                               actualExportFile, callback) {
 
-	var configFile = temp.path()
+	var configFile = temp.path(),
+		shellCommand,
+		cliArguments = [
+			javaPath,
+			'-Xms128m',
+			'-Xmx768m',
+			'-jar',
+			importExportExecutable,
+			'-shell'
+		]
+
+	options.config = options.config || projectConfig
 
 	fs.writeFileSync(
 		configFile,
@@ -34,10 +62,15 @@ function executeShellCommand (shellCommand, options, exportFile,
 		parser.toXml(options.config)
 	)
 
-	shellCommand = shellCommand + ' -config ' + configFile
+	cliArguments = cliArguments
+		.concat('-config', configFile, additionalArguments)
 
-	process.chdir(programDirectory)
-	console.log('Changed directory to ' + programDirectory)
+	//process.chdir(programDirectory)
+	//console.log('Changed directory to ' + programDirectory)
+
+	shellCommand = cliArguments.join(' ')
+	console.log(shellCommand)
+
 
 	childProcess.exec(
 		shellCommand,
@@ -107,11 +140,149 @@ module.exports.exportSync = function (midiBuffer, options) {
 
 module.exports.setupDatabase = function () {
 
+
+	function alreadyExists (error) {
+		return error.message.search(/already exists/gi) !== -1
+	}
+
 	pgQuery.connectionParameters = intitalDbString
 
-	pgQuery('create database "cityviz"')
+	pgQuery("create user cityviz with password 'cityviz'")
+		.then(
+		function () {
+			console.log('User created')
+		},
+		function (error) {
+			if (alreadyExists(error))
+				console.log(error.message)
+			else
+				throw error
+		})
+
 		.then(function () {
-			return pgQuery('create extension postgis')
+			return pgQuery("create database cityviz").then(
+				function () {
+					console.log('Database created')
+				},
+				function (error) {
+					if (alreadyExists(error))
+						console.log(error.message)
+					else
+						throw error
+				}
+			)
+		})
+
+		.then(function () {
+			return pgQuery(
+				"grant all privileges on database cityviz to cityviz").then(
+				function () {
+					console.log('Privileges granted')
+				},
+				function (error) {
+					if (alreadyExists(error))
+						console.log(error.message)
+					else
+						throw error
+				})
+		})
+
+		.then(function () {
+			return pgQuery('create extension postgis').then(
+				function () {
+					console.log('Created postgis extension')
+				},
+				function (error) {
+					if (alreadyExists(error))
+						console.log(error.message)
+					else
+						throw error
+				})
+		})
+
+		.then(function () {
+			return pgQuery('create extension postgis_topology').then(
+				function () {
+					console.log('Created postgis_topology extension')
+				},
+				function (error) {
+					if (alreadyExists(error))
+						console.log(error.message)
+					else
+						throw error
+				})
+		})
+
+		.then(function () {
+			return pgQuery('ALTER EXTENSION postgis SET SCHEMA public')
+		})
+
+		.then(function () {
+
+			var sqlScriptsPath,
+				psql
+
+
+			sqlScriptsPath = path.resolve(
+				__dirname,
+				'../../node_modules',
+				'3dcitydb-importer-exporter',
+				'3dcitydb',
+				'postgis'
+			)
+
+			// TODO: Use node-postgres instead
+			psql = childProcess.spawn(
+				'psql',
+				[
+					'cityviz',
+					'-U',
+					'cityviz',
+					'-f',
+					'CREATE_DB.sql'],
+				{
+					cwd: sqlScriptsPath
+				}
+			)
+
+			psql.stdout.on('data', function (data) {
+				var text = data.toString()
+
+				console.log(text)
+
+				if (text.search('valid SRID') !== -1)
+					psql.stdin.write(dbConfig.srid + '\n')
+
+				if (text.search('corresponding SRSName') !== -1)
+					psql.stdin.write(dbConfig.srid + '\n')
+			})
+			psql.stderr.on('data', function (data) {
+				console.error(data.toString())
+			})
+			psql.on('close', function (code) {
+				console.log('child process exited with code ' + code)
+				psql.stdin.end()
+			})
+
+			//{
+			//	shell: '/bin/bash',
+			//	env: {
+			//		PGDATABASE: dbConfig.db,
+			//		PGPORT: dbConfig.port,
+			//		PGHOST: dbConfig.host,
+			//		PGUSER: dbConfig.user//,
+			//		//CITYDB: dbConfig.db,
+			//		//PGBIN: dbConfig.binPath
+			//	}
+			//},
+			//function (error, stdout, stderr) {
+			//
+			//	console.log(stdout)
+			//	console.error(stderr)
+			//
+			//	if (error)
+			//		throw error
+			//}
 		})
 		.catch(function (error) {
 			console.error(error)
@@ -124,7 +295,7 @@ module.exports.dropDatabase = function () {
 	pgQuery.connectionParameters = intitalDbString
 
 	pgQuery(
-		'drop database if exists "cityviz"',
+		'drop database if exists cityviz',
 		function (error, rows, result) {
 			if (error)
 				throw error
@@ -140,7 +311,7 @@ module.exports.import = function (options, callback) {
 	var defaults = {
 			test: 'test'
 		},
-		shellCommand,
+		cliArguments,
 		imports
 
 
@@ -161,19 +332,13 @@ module.exports.import = function (options, callback) {
 	//		.path
 	//		.standardPath = {$t: __dirname + 'citymodel'}
 
-	shellCommand = [
-		javaPath,
-		'-jar',
-		'-Xms128m',
-		'-Xmx768m',
-		executable,
-		'-shell',
+	cliArguments = [
 		'-import',
 		imports
-	].join(' ')
+	]
 
 	executeShellCommand(
-		shellCommand,
+		cliArguments,
 		options,
 		null,
 		null,
@@ -188,7 +353,7 @@ module.exports.getFromDb = function (options, callback) {
 			format: 'xml' // xml, kml, kmz
 		},
 		actualExportFile,
-		shellCommand,
+		cliArguments,
 		exportFile
 
 
@@ -222,19 +387,13 @@ module.exports.getFromDb = function (options, callback) {
 	)
 
 
-	shellCommand = [
-		javaPath,
-		'-jar',
-		'-Xms128m',
-		'-Xmx768m',
-		executable,
-		'-shell',
+	cliArguments = [
 		(options.format === 'xml') ? '-export' : '-kmlExport',
 		exportFile
-	].join(' ')
+	]
 
 	executeShellCommand(
-		shellCommand,
+		cliArguments,
 		options,
 		exportFile,
 		actualExportFile,

@@ -1,9 +1,12 @@
 {
   "name": "cityviz",
   "version": "0.1.0",
-  "description": "Interactive real time WebGL powered 3d rendering of Rotterdam ",
+  "description": "Interactive real time WebGL powered 3d rendering of Rotterdam",
   "main": "server.js",
-  "bin": "bin/cli.js",
+  "bin": {
+    "cityviz": "cli/cityviz.js",
+    "citygml2gltf": "modules/citygml2gltf/cli/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://projects.hpi3d.de/git/06-webgl-client"
@@ -13,31 +16,31 @@
     "3D",
     "city"
   ],
-  "author": "Adrian Sieber, Stephan Detje",
+  "contributors": [
+    "Adrian Sieber",
+    "Stephan Detje"
+  ],
   "license": "All rights reserved",
   "dependencies": {
-    "cesiumjs": "^1.4.0",
-    "clone": "^0.2.0",
+    "3dcitydb-impexp": "adius/3dcitydb-impexp#177db59",
+    "better-path": "^0.2.0",
+    "cesiumjs": "^1.6.0",
+    "clone": "^1.0.0",
     "commander": "^2.6.0",
     "es6-promise": "^2.0.1",
-    "fs-extra": "^0.14.0",
+    "fs-extra": "^0.16.3",
     "fs-promise": "^0.3.1",
-    "js-yaml": "^3.2.5",
-    "mocha": "^2.1.0",
+    "js-yaml": "^3.2.7",
     "pg": "^4.2.0",
     "pg-query": "^0.11.0",
     "temp": "^0.8.1",
     "three": "^0.69.0",
-    "xml2json": "^0.5.1"
+    "xml2json": "^0.6.1"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha",
-    "install": "napa"
-  },
-  "napa": {
-    "3dcitydb": "3dcitydb/3dcitydb#8c84605409d19b4db01ba3154b62b7337c9104d4"
+    "test": "node_modules/.bin/mocha test"
   },
   "devDependencies": {
-    "napa": "^1.2.0"
+    "mocha": "^2.1.0"
   }
 }
