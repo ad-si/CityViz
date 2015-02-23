@@ -9,13 +9,24 @@ var path = require('path'),
 citygml2gltf(
 	{
 		inputFile: inputFile,
-		outputFile: outputFile
+		//outputFile: outputFile,
+		beautify: true
 	},
 	function (error, data) {
 		if (error)
 			throw error
-		else
-			console.log('Data was converted')
+		else {
+			if (data)
+				console.log(
+					JSON.stringify(
+						data.CityModel.cityObjects[0],
+						null,
+						2
+					)
+				)
+			else
+				console.log('Data was converted')
+		}
 	}
 )
 
