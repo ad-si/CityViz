@@ -70,6 +70,10 @@ In order to get an overview over available commands run the cli script:
 	Gives everyone in your organization the ability to discover,
 	use, make and share maps.
 
+### Gltf
+
+- [mason.gmu.edu/~bcoughl2/cs752](http://mason.gmu.edu/~bcoughl2/cs752) -
+	3D for the Modern Web: Declarative 3D and glTF
 
 ### Viewer
 
