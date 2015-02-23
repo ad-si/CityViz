@@ -10,7 +10,7 @@ function convert (buildings) {
 			// return building
 
 			return {
-				id: building['bldg:Building']['gml:id'],
+				gmlid: building['bldg:Building']['gml:id'],
 				terrainHeight: building['bldg:Building']
 					['gen:doubleAttribute']['gen:value'],
 				gltf: {
