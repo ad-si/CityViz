@@ -1,0 +1,15 @@
+{
+  "name": "citygml2gltf",
+  "version": "0.1.0",
+  "description": "Convert citygml to gltf",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha test"
+  },
+  "keywords": [
+    "citygml",
+    "gltf"
+  ],
+  "author": "Adrian Sieber",
+  "license": "MIT"
+}
