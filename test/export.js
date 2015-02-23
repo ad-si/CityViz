@@ -27,7 +27,7 @@ var fse = require('fs-extra'),
 	}
 
 
-describe('Export & Conversion', function () {
+describe.skip('Export & Conversion', function () {
 
 	var buildDir = path.join(__dirname, 'build')
 
@@ -43,9 +43,9 @@ describe('Export & Conversion', function () {
 			options,
 			function (error) {
 				if (error)
-					throw error
-
-				done()
+					done(error)
+				else
+					done()
 			})
 	})
 
@@ -63,9 +63,9 @@ describe('Export & Conversion', function () {
 				},
 				function (error) {
 					if (error)
-						throw error
-
-					done()
+						done(error)
+					else
+						done()
 				}
 			)
 		}
