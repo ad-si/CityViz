@@ -11,5 +11,8 @@
     "gltf"
   ],
   "author": "Adrian Sieber",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^2.1.0"
+  }
 }
