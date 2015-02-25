@@ -1,5 +1,10 @@
 "use strict"
 
+// establish DB connection
+var MongoClient = require('mongodb').MongoClient;
+
+
+
 var express = require('express'),
 	compression = require('compression'),
 	url = require('url'),
@@ -143,6 +148,22 @@ app.get('/proxy/*', function (req, res, next) {
 			res.send(code, body)
 		}
 	)
+})
+
+app.get("/db/*", function(req, res, next){
+	// Connect to the db
+	MongoClient.connect("mongodb://localhost:27017/cityViz", function(err, db) {
+		if(!err) {
+			console.log("We are connected")
+			var collection = db.collection('buildings')
+			if(collection != null)
+				collection.find({}).toArray(function(err, items){
+					res.status(200).send({err: err, result: items})
+				})
+			else
+				res.status(404).send({result: "Could not retrieve data from db..."})
+		}
+	})
 })
 
 server = app.listen(
