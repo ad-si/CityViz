@@ -1,13 +1,79 @@
 var fs = require('fs'),
-	parser = require('xml2json')
+	parser = require('xml2json'),
+	assert = require('assert')
 
 
-function convert (buildings) {
+function log (item) {
+	console.log(JSON.stringify(item, null, 2))
+}
+
+function getOnlyProperty (object) {
+
+	var keys = Object.keys(object)
+
+	if (keys.length === 1)
+		return object[keys[0]]
+	else
+		throw Error(JSON.stringify(object) + ' has more than one property!')
+}
+
+function getPosList (polygon, zeroPoint) {
+
+	var coordsList = polygon
+			['gml:Polygon']
+			['gml:exterior']
+			['gml:LinearRing']
+			['gml:posList']
+			.split(' '),
+		coordObjects = [],
+		i
+
+	for (i = 0; i < coordsList.length; i += 3) {
+		coordObjects.push({
+			x: coordsList[i] - zeroPoint.x,
+			y: coordsList[i + 1]- zeroPoint.y,
+			z: coordsList[i + 2]- zeroPoint.z
+		})
+	}
+
+	//assert.deepEqual(coordObjects[0], coordObjects.pop())
+
+	return coordObjects
+}
+
+function convert (buildings, options) {
 
 	return buildings
-		.map(function (building) {
+		.map(function (building, index) {
 
-			// return building
+			if (index > 1)
+				return 0
+
+			//console.log(JSON.stringify(building,null,2))
+
+			var bounds = building['bldg:Building']['bldg:boundedBy']
+
+			bounds = bounds
+				.map(function (surface) {
+
+					var Polygons = getOnlyProperty(surface)
+						['bldg:lod2MultiSurface']
+						['gml:MultiSurface']
+						['gml:surfaceMember']
+
+
+					if (Array.isArray(Polygons)) {
+						return Polygons.map(function (polygon) {
+							return getPosList(polygon, options.zeroPoint)
+						})
+					}
+					else {
+						// Polygons is just one polygon object
+						return getPosList(Polygons, options.zeroPoint)
+					}
+				})
+
+			console.log(bounds)//['bldg:RootSurface'])
 
 			return {
 				gmlid: building['bldg:Building']['gml:id'],
@@ -127,7 +193,9 @@ function convert (buildings) {
 
 module.exports = function (options, callback) {
 
-	var output,
+	var zeroCoords = [],
+		zeroPoint,
+		output,
 		input
 
 	if (Buffer.isBuffer(options))
@@ -140,8 +208,18 @@ module.exports = function (options, callback) {
 			object: true
 		})
 
+		zeroCoords = output.CityModel['gml:boundedBy']['gml:Envelope']
+			['gml:lowerCorner'].split(' ')
+
+		zeroPoint = {
+			x: zeroCoords[0],
+			y: zeroCoords[1],
+			z: zeroCoords[2]
+		}
+
 		output.CityModel.cityObjects = convert(
-			output.CityModel.cityObjectMember
+			output.CityModel.cityObjectMember,
+			{zeroPoint: zeroPoint}
 		)
 
 		delete output.CityModel.cityObjectMember
