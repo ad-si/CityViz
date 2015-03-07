@@ -45,7 +45,10 @@ function getOnlyProperty (object) {
 	if (keys.length === 1)
 		return object[keys[0]]
 	else
-		throw Error(JSON.stringify(object) + ' has more than one property!')
+		throw Error(
+			JSON.stringify(object) +
+			' has more than one property!'
+		)
 }
 
 function getPosList (polygon, zeroPoint) {
@@ -57,19 +60,22 @@ function getPosList (polygon, zeroPoint) {
 			['gml:posList']
 			.split(' '),
 		coordObjects = [],
+		arrayStyle = true,
 		i
 
 	for (i = 0; i < coordsList.length; i += 3) {
-		//coordObjects.push({
-		//	x: coordsList[i] - zeroPoint.x,
-		//	y: coordsList[i + 1]- zeroPoint.y,
-		//	z: coordsList[i + 2]- zeroPoint.z
-		//})
-		coordObjects.push([
-			coordsList[i] - zeroPoint.x,
-			coordsList[i + 1] - zeroPoint.y,
-			coordsList[i + 2] - zeroPoint.z
-		])
+		if (arrayStyle)
+			coordObjects.push([
+				coordsList[i] - zeroPoint.x,
+				coordsList[i + 1] - zeroPoint.y,
+				coordsList[i + 2] - zeroPoint.z
+			])
+		else
+			coordObjects.push({
+				x: coordsList[i] - zeroPoint.x,
+				y: coordsList[i + 1] - zeroPoint.y,
+				z: coordsList[i + 2] - zeroPoint.z
+			})
 	}
 
 	assert.deepEqual(coordObjects[0], coordObjects.pop())
@@ -99,14 +105,75 @@ function surfacesToBufferObject (surfaceTypes) {
 		)),
 		coordinateBuffer = toBuffer(coordinates.buffer)
 
+
 	return {
 		byteLength: coordinates.length * 4,
 		type: 'arraybuffer',
-		uri: 'data:application/octet-stream;base64,' +
-		     coordinateBuffer.toString('base64')
+		uri:        'data:application/octet-stream;base64,' +
+		            coordinateBuffer.toString('base64')
 	}
 
 
+}
+
+function getAccessors (options) {
+	return {
+		'accessor-01': {
+			bufferView: "bufferView_01",
+			byteOffset: 0,
+			byteStride: 0,
+			componentType: 5126, // Float
+			count: options.count,
+			type: "VEC3"
+		}
+	}
+}
+
+
+function getPasses (options) {
+
+	return {
+		defaultPass: {
+			details: {
+				type: "COLLADA-1.4.1/commonProfile",
+				commonProfile: {
+					extras: {
+						doubleSided: false
+					},
+					lightingModel: "Phong",
+					parameters: [
+						"diffuse",
+						"modelViewMatrix",
+						"normalMatrix",
+						"projectionMatrix",
+						"shininess",
+						"specular"
+					]
+				}
+			},
+			instanceProgram: {
+				attributes: {
+					a_normal: "normal",
+					a_position: "position"
+				},
+				program: "program_0",
+				uniforms: {
+					u_diffuse: "diffuse",
+					u_modelViewMatrix: "modelViewMatrix",
+					u_normalMatrix: "normalMatrix",
+					u_projectionMatrix: "projectionMatrix",
+					u_shininess: "shininess",
+					u_specular: "specular"
+				}
+			},
+			states: {
+				enable: [
+					2884,
+					2929
+				]
+			}
+		}
+	}
 }
 
 function convert (buildings, options) {
@@ -120,33 +187,34 @@ function convert (buildings, options) {
 			//console.log(JSON.stringify(building,null,2))
 
 			var surfaceTypes = building['bldg:Building']['bldg:boundedBy']
-				.map(function (surfaceType) {
+					.map(function (surfaceType) {
 
-					var surfaces,
-						Polygons = getOnlyProperty(surfaceType)
-							['bldg:lod2MultiSurface']
-							['gml:MultiSurface']
-							['gml:surfaceMember']
+						var surfaces,
+							Polygons = getOnlyProperty(surfaceType)
+								['bldg:lod2MultiSurface']
+								['gml:MultiSurface']
+								['gml:surfaceMember']
 
 
-					if (Array.isArray(Polygons)) {
-						surfaces = Polygons.map(function (polygon) {
-							return getPosList(polygon, options.zeroPoint)
-						})
-					}
-					else {
-						// Polygons is just one polygon object
-						surfaces = [getPosList(Polygons, options.zeroPoint)]
-					}
+						if (Array.isArray(Polygons)) {
+							surfaces = Polygons.map(function (polygon) {
+								return getPosList(polygon, options.zeroPoint)
+							})
+						}
+						else {
+							// Polygons is just one polygon object
+							surfaces = [getPosList(Polygons, options.zeroPoint)]
+						}
 
-					return {
-						surfaceType: Object.keys(surfaceType)[0],
-						surfaces: surfaces.map(function (surface) {
-							return surface
-							//return earcut(surface)
-						})
-					}
-				})
+						return {
+							surfaceType: Object.keys(surfaceType)[0],
+							surfaces: surfaces.map(function (surface) {
+								return surface
+								//return earcut(surface)
+							})
+						}
+					}),
+				buildingBuffer = surfacesToBufferObject(surfaceTypes)
 
 
 			return {
@@ -154,12 +222,19 @@ function convert (buildings, options) {
 				terrainHeight: building['bldg:Building']
 					['gen:doubleAttribute']['gen:value'],
 				gltf: {
-					accessors: {},
+					accessors: getAccessors({count: buildingBuffer.byteLength}),
 					asset: {},
 					buffers: {
-						building: surfacesToBufferObject(surfaceTypes)
+						building: buildingBuffer
 					},
-					bufferViews: {},
+					bufferViews: {
+						bufferView_01: {
+							buffer: "building",
+							byteLength: buildingBuffer.byteLength,
+							byteOffset: 0,
+							target: 34962
+						}
+					},
 					cameras: {
 						camera1: {
 							perspective: {
@@ -185,33 +260,26 @@ function convert (buildings, options) {
 						}
 					},
 					materials: {
-						material1: {
+						material_01: {
+							name: "Material 1",
 							instanceTechnique: {
 								technique: "technique1",
 								values: {
-									ambient: [
-										0,
-										0,
-										0,
-										1
-									],
-									diffuse: "texture-file-1",
-									emission: [
-										0,
+									diffuse: [
+										0.8,
 										0,
 										0,
 										1
 									],
-									shininess: 38.4,
+									shininess: 256,
 									specular: [
-										0,
-										0,
-										0,
+										0.2,
+										0.2,
+										0.2,
 										1
 									]
 								}
-							},
-							name: "Material 1"
+							}
 						}
 					},
 					meshes: {
@@ -220,47 +288,104 @@ function convert (buildings, options) {
 							primitives: [
 								{
 									attributes: {
-										"NORMAL": "accessor-1",
-										"POSITION": "accessor-2",
-										"TEXCOORD_0": "accessor-3"
+										NORMAL: "accessor-01",
+										POSITION: "accessor-01",
+										TEXCOORD_0: "accessor-01"
 									},
-									indices: "accessor-4",
-									material: "material1",
-									primitive: 4
+									indices: "accessor-01",
+									material: "material_01",
+									primitive: 2 // Line loop
 								}
 							]
 						}
 					},
 					nodes: {
 						building: {
-							meshes: ['buildingMesh'],
-							name: 'Building'
-						},
-						camera1: {
-							camera: 'camera1',
-							name: 'Camera 1'
-						},
-						directionalLight1: {
-							light: 'directionalLight1',
-							name: 'Directional Light 1'
+							name: 'Building',
+							meshes: [
+								'buildingMesh'
+							]
+						}
+						//,
+						//camera1: {
+						//	camera: 'camera1',
+						//	name: 'Camera 1'
+						//},
+						//directionalLight1: {
+						//	light: 'directionalLight1',
+						//	name: 'Directional Light 1'
+						//}
+					},
+					programs: {
+						program_0: {
+							attributes: [
+								"a_normal",
+								"a_position"
+							],
+							fragmentShader: "building_FS",
+							vertexShader: "building_VS"
 						}
 					},
-					programs: {},
-					samplers: {},
+					//samplers: {},
 					scene: 'defaultScene',
 					scenes: {
 						defaultScene: {
 							nodes: [
 								'building',
-								'camera1',
-								'directionalLight1'
+								//'camera1',
+								//'directionalLight1'
 							]
 						}
 					},
-					shaders: {},
+					shaders: {
+						building_FS: {
+							type: 35632,
+							uri: "/shaders/building_FS.glsl"
+						},
+						building_VS: {
+							type: 35633,
+							uri: "/shaders/building_VS.glsl"
+						}
+					},
 					skins: {},
-					techniques: {},
-					textures: {}
+					textures: {},
+					techniques: {
+						technique1: {
+							parameters: {
+								diffuse: {
+									type: 35666
+								},
+								modelViewMatrix: {
+									semantic: "MODELVIEW",
+									type: 35676
+								},
+								normal: {
+									semantic: "NORMAL",
+									type: 35665
+								},
+								normalMatrix: {
+									semantic: "MODELVIEWINVERSETRANSPOSE",
+									type: 35675
+								},
+								position: {
+									semantic: "POSITION",
+									type: 35665
+								},
+								projectionMatrix: {
+									semantic: "PROJECTION",
+									type: 35676
+								},
+								shininess: {
+									type: 5126
+								},
+								specular: {
+									type: 35666
+								}
+							},
+							pass: "defaultPass",
+							passes: getPasses()
+						}
+					}
 				}
 			}
 		})
