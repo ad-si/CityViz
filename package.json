@@ -36,7 +36,11 @@
     "rethinkdbdash": "^1.16.10",
     "temp": "^0.8.1",
     "three": "^0.69.0",
-    "xml2json": "^0.6.1"
+    "xml2json": "^0.6.1",
+    "mongodb": "~1.4.31",
+    "compression": "~1.4.1",
+    "request": "~2.53.0",
+    "yargs": "~3.3.1"
   },
   "scripts": {
     "test": "node_modules/.bin/mocha test"
