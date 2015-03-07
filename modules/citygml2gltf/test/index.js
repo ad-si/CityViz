@@ -1,9 +1,19 @@
 var path = require('path'),
+	util = require('util'),
 	citygml2gltf = require('../index.js'),
 	inputFile = path.resolve(__dirname, './4-52-NOORD_KETHEL.xml')
 
+function inspect (item) {
+	console.log(util.inspect(
+		item,
+		{
+			depth: null,
+			colors: true
+		}
+	))
+}
 
-describe('Citygm2gltf', function () {
+describe('Citygml2gltf', function () {
 	it('Converts a citygml file to a gltf array', function () {
 
 		this.timeout('5s')
@@ -18,9 +28,7 @@ describe('Citygm2gltf', function () {
 					throw error
 
 				else {
-					//console.log(
-					//	JSON.stringify(data.CityModel.cityObjects[0], null, 2)
-					//)
+					inspect(data.CityModel.cityObjects[0])
 				}
 			}
 		)

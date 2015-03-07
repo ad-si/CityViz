@@ -1,10 +1,41 @@
 var fs = require('fs'),
+	util = require('util'),
+	assert = require('assert'),
+
 	parser = require('xml2json'),
-	assert = require('assert')
+	earcut = require('earcut')
 
 
-function log (item) {
-	console.log(JSON.stringify(item, null, 2))
+function inspect (item) {
+	console.log(util.inspect(
+		item,
+		{
+			depth: null,
+			colors: true
+		}
+	))
+}
+
+
+function toBuffer (arrayBuffer) {
+
+	var buffer,
+		i,
+		view
+
+	if (Buffer && Buffer.isBuffer(arrayBuffer))
+		return arrayBuffer
+
+	else {
+		buffer = new Buffer(arrayBuffer.byteLength)
+		view = new Uint8Array(arrayBuffer)
+		i = 0
+		while (i < buffer.length) {
+			buffer[i] = view[i]
+			++i
+		}
+		return buffer
+	}
 }
 
 function getOnlyProperty (object) {
@@ -29,16 +60,53 @@ function getPosList (polygon, zeroPoint) {
 		i
 
 	for (i = 0; i < coordsList.length; i += 3) {
-		coordObjects.push({
-			x: coordsList[i] - zeroPoint.x,
-			y: coordsList[i + 1]- zeroPoint.y,
-			z: coordsList[i + 2]- zeroPoint.z
-		})
+		//coordObjects.push({
+		//	x: coordsList[i] - zeroPoint.x,
+		//	y: coordsList[i + 1]- zeroPoint.y,
+		//	z: coordsList[i + 2]- zeroPoint.z
+		//})
+		coordObjects.push([
+			coordsList[i] - zeroPoint.x,
+			coordsList[i + 1] - zeroPoint.y,
+			coordsList[i + 2] - zeroPoint.z
+		])
 	}
 
-	//assert.deepEqual(coordObjects[0], coordObjects.pop())
+	assert.deepEqual(coordObjects[0], coordObjects.pop())
 
 	return coordObjects
+}
+
+function surfacesToBufferObject (surfaceTypes) {
+
+	var coordinates = new Float32Array(Array.prototype.concat.apply(
+			[],
+			surfaceTypes.map(function (surfaceType) {
+
+				var flattedSurfaces = surfaceType.surfaces.map(
+					function (surface) {
+
+						return Array.prototype
+							.concat
+							.apply([], surface)
+					}
+				)
+
+				return Array.prototype.concat.apply(
+					[], flattedSurfaces
+				)
+			})
+		)),
+		coordinateBuffer = toBuffer(coordinates.buffer)
+
+	return {
+		byteLength: coordinates.length * 4,
+		type: 'arraybuffer',
+		uri: 'data:application/octet-stream;base64,' +
+		     coordinateBuffer.toString('base64')
+	}
+
+
 }
 
 function convert (buildings, options) {
@@ -51,29 +119,35 @@ function convert (buildings, options) {
 
 			//console.log(JSON.stringify(building,null,2))
 
-			var bounds = building['bldg:Building']['bldg:boundedBy']
+			var surfaceTypes = building['bldg:Building']['bldg:boundedBy']
+				.map(function (surfaceType) {
 
-			bounds = bounds
-				.map(function (surface) {
-
-					var Polygons = getOnlyProperty(surface)
-						['bldg:lod2MultiSurface']
-						['gml:MultiSurface']
-						['gml:surfaceMember']
+					var surfaces,
+						Polygons = getOnlyProperty(surfaceType)
+							['bldg:lod2MultiSurface']
+							['gml:MultiSurface']
+							['gml:surfaceMember']
 
 
 					if (Array.isArray(Polygons)) {
-						return Polygons.map(function (polygon) {
+						surfaces = Polygons.map(function (polygon) {
 							return getPosList(polygon, options.zeroPoint)
 						})
 					}
 					else {
 						// Polygons is just one polygon object
-						return getPosList(Polygons, options.zeroPoint)
+						surfaces = [getPosList(Polygons, options.zeroPoint)]
+					}
+
+					return {
+						surfaceType: Object.keys(surfaceType)[0],
+						surfaces: surfaces.map(function (surface) {
+							return surface
+							//return earcut(surface)
+						})
 					}
 				})
 
-			console.log(bounds)//['bldg:RootSurface'])
 
 			return {
 				gmlid: building['bldg:Building']['gml:id'],
@@ -82,7 +156,9 @@ function convert (buildings, options) {
 				gltf: {
 					accessors: {},
 					asset: {},
-					buffers: {},
+					buffers: {
+						building: surfacesToBufferObject(surfaceTypes)
+					},
 					bufferViews: {},
 					cameras: {
 						camera1: {
