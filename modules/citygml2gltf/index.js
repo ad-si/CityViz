@@ -181,8 +181,8 @@ function convert (buildings, options) {
 	return buildings
 		.map(function (building, index) {
 
-			if (index > 1)
-				return 0
+			//if (index > 1)
+			//	return 0
 
 			//console.log(JSON.stringify(building,null,2))
 
@@ -396,20 +396,22 @@ module.exports = function (options, callback) {
 
 	var zeroCoords = [],
 		zeroPoint,
-		output,
-		input
+		inputAsJson,
+		inputAsXml,
+		buildings,
+		output
 
 	if (Buffer.isBuffer(options))
-		input = options
+		inputAsXml = options
 	else
-		input = fs.readFileSync(options.inputFile)
+		inputAsXml = fs.readFileSync(options.inputFile)
 
 	try {
-		output = parser.toJson(input, {
+		inputAsJson = parser.toJson(inputAsXml, {
 			object: true
 		})
 
-		zeroCoords = output.CityModel['gml:boundedBy']['gml:Envelope']
+		zeroCoords = inputAsJson.CityModel['gml:boundedBy']['gml:Envelope']
 			['gml:lowerCorner'].split(' ')
 
 		zeroPoint = {
@@ -418,12 +420,10 @@ module.exports = function (options, callback) {
 			z: zeroCoords[2]
 		}
 
-		output.CityModel.cityObjects = convert(
-			output.CityModel.cityObjectMember,
+		buildings = convert(
+			inputAsJson.CityModel.cityObjectMember,
 			{zeroPoint: zeroPoint}
 		)
-
-		delete output.CityModel.cityObjectMember
 	}
 	catch (error) {
 		return callback(error)
@@ -432,13 +432,13 @@ module.exports = function (options, callback) {
 	if (options.outputFile) {
 
 		if (options.beautify)
-			output = JSON.stringify(output, null, 4)
+			output = JSON.stringify(buildings, null, 4)
 		else
-			output = JSON.stringify(output)
+			output = JSON.stringify(buildings)
 
 		fs.writeFileSync(options.outputFile, output)
-		callback()
+		return callback()
 	}
-	else
-		callback(null, output)
+
+	callback(null, buildings)
 }
