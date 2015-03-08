@@ -4,11 +4,15 @@
 
 var fs = require('fs'),
 	path = require('path'),
+	util = require('util'),
+	assert = require('assert'),
+
 	program = require('commander'),
+
 	cityNode = require('../modules/cityNode'),
 	citygml2gltf = require('../modules/citygml2gltf'),
 	importPath,
-	rdbWrapper = require('../src/index')
+	rdbWrapper = require('../src/rdbWrapper.js')
 
 
 program.parse(process.argv)
@@ -27,25 +31,22 @@ rdbWrapper
 	.createTable()
 	.then(function () {
 
-		citygml2gltf({inputFile: importPath}, function (error, data) {
+		citygml2gltf(
+			{inputFile: importPath},
+			function (error, buildings) {
 
-			if (error)
-				throw error
+				if (error)
+					throw error
 
-			else {
-				data
-					.CityModel
-					.cityObjects
-					.forEach(function (cityObject, index) {
+				buildings.forEach(function (cityObject) {
 
-						rdbWrapper
-							.insert(cityObject)
-							.then(function () {
-								console.log(
-									'Imported cityobject ' + cityObject.gmlid
-								)
-							})
-					})
-			}
-		})
+					rdbWrapper
+						.insert(cityObject)
+						.then(function () {
+							console.log(
+								'Imported cityobject ' + cityObject.gmlid
+							)
+						})
+				})
+			})
 	})
