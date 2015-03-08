@@ -28,5 +28,13 @@ rdbWrapper.insert = function (data) {
 		})
 }
 
+rdbWrapper.getAll = function(){
+
+	return rethinkdb
+		.db('cityviz')
+		.table('buildings')
+		.run()
+}
+
 
 module.exports = rdbWrapper
