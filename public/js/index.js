@@ -43,7 +43,11 @@ $.get("/db/hi", function(data){
         var r = 2.0 * Math.max(model.boundingSphere.radius, camera.frustum.near)
         controller.minimumZoomDistance = r * 0.5
 
-        var center = Cesium.Matrix4.multiplyByPoint(model.modelMatrix, model.boundingSphere.center, new Cesium.Cartesian3())
+        var center = Cesium.Matrix4.multiplyByPoint(
+	        model.modelMatrix,
+	        model.boundingSphere.center,
+	        new Cesium.Cartesian3()
+        )
         var heading = Cesium.Math.toRadians(230.0)
         var pitch = Cesium.Math.toRadians(-20.0)
         camera.lookAt(center, new Cesium.HeadingPitchRange(heading, pitch, r * 2.0))
