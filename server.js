@@ -166,6 +166,38 @@ app.get("/db/*", function(req, res, next){
 	})
 })
 
+app.get("/project/*", function(req, res, next){
+	var proxy,
+		serviceUrl = createServiceUrl([
+			[86693.42, 441900.78],
+			[86694.52, 441896.]
+		])
+
+	console.log(serviceUrl)
+
+	if (upstreamProxy && !(serviceUrl.host in bypassUpstreamProxyHosts))
+		proxy = upstreamProxy
+
+	request.get(
+		{
+			url: url.format(serviceUrl),
+			headers: filterHeaders(req, req.headers),
+			encoding: null,
+			proxy: proxy
+		},
+		function (error, response, body) {
+			var code = 500
+
+			if (response) {
+				code = response.statusCode
+				res.header(filterHeaders(req, response.headers))
+			}
+
+			res.send(code, body)
+		}
+	)
+})
+
 server = app.listen(
 	argv.port, argv.public ? undefined : 'localhost',
 	function () {
@@ -211,3 +243,42 @@ process.on('SIGINT', function () {
 		process.exit(0)
 	})
 })
+
+
+/**** Project coordinates from 28992 to 4326
+
+ http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=28992&outSR=4326&geometries=%7B%0D%0A%22geometryType%22%3A%22esriGeometryPoint%22%2C%0D%0A%22geometries%22%3A%5B%7B%22x%22%3A86693.42%2C+%22y%22%3A+441900.78%7D%5D%0D%0A%7D&f=JSON
+
+ ****/
+
+var projectServiceUrlParts = [
+	"http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?",
+	"inSR=28992",
+	"&outSR=4326",
+	"&geometries={",
+	"\"geometryType\":\"esriGeometryPoint\",",
+	"\"geometries\":"
+]
+
+//expect array like [ [1.1, 2.1], [2.1, 1.1] ]
+function createServiceUrl(array){
+	var geometries = [],
+		serviceUrl
+
+	array.forEach(function(point){
+		geometries.push({
+			"x": point[0],
+			"y": point[1]
+		})
+	})
+
+	serviceUrl = projectServiceUrlParts.join("") + JSON.stringify(geometries) + "}&f=pjson"
+
+	if (!serviceUrl)
+		return 'No url specified.'
+
+	if (!serviceUrl.protocol)
+		serviceUrl.protocol = 'http:'
+
+	return serviceUrl
+}
