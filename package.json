@@ -24,7 +24,7 @@
   "dependencies": {
     "3dcitydb-impexp": "adius/3dcitydb-impexp#177db59",
     "better-path": "^0.2.0",
-    "cesiumjs": "^1.6.0",
+    "cesiumjs": "1.7.2",
     "clone": "^1.0.0",
     "commander": "^2.6.0",
     "compression": "~1.4.1",
