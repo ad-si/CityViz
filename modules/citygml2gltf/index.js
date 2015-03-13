@@ -3,7 +3,7 @@ var fs = require('fs'),
 	assert = require('assert'),
 
 	parser = require('xml2json'),
-	earcut = require('earcut')
+	proj4 = require('proj4')
 
 
 function inspect (item) {
@@ -51,6 +51,31 @@ function getOnlyProperty (object) {
 		)
 }
 
+function toLongLat (vertex) {
+
+	var temp
+
+	proj4.defs(
+		'EPSG:28992',
+
+		'+proj=sterea ' +
+		'+lat_0=52.15616055555555 ' +
+		'+lon_0=5.38763888888889 ' +
+		'+k=0.9999079 ' +
+		'+x_0=155000 +y_0=463000 ' +
+		'+ellps=bessel ' +
+		'+towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 ' +
+		'+units=m ' +
+		'+no_defs'
+	)
+
+	temp = proj4('EPSG:28992', 'EPSG:4326', vertex)
+
+	console.log(vertex, temp)
+
+	return [temp[0], temp[1], vertex[2]]
+}
+
 function getPosList (polygon, zeroPoint) {
 
 	var coordsList = polygon
@@ -61,21 +86,25 @@ function getPosList (polygon, zeroPoint) {
 			.split(' '),
 		coordObjects = [],
 		arrayStyle = true,
+		subtractZeroPoint = false,
 		i
+
+	if (!subtractZeroPoint)
+		zeroPoint = {x: 0, y: 0, z: 0}
 
 	for (i = 0; i < coordsList.length; i += 3) {
 		if (arrayStyle)
-			coordObjects.push([
+			coordObjects.push(toLongLat([
 				coordsList[i] - zeroPoint.x,
 				coordsList[i + 1] - zeroPoint.y,
 				coordsList[i + 2] - zeroPoint.z
-			])
+			]))
 		else
-			coordObjects.push({
+			coordObjects.push(toLongLat({
 				x: coordsList[i] - zeroPoint.x,
 				y: coordsList[i + 1] - zeroPoint.y,
 				z: coordsList[i + 2] - zeroPoint.z
-			})
+			}))
 	}
 
 	assert.deepEqual(coordObjects[0], coordObjects.pop())
@@ -114,6 +143,63 @@ function surfacesToBufferObject (surfaceTypes) {
 	}
 
 
+}
+
+function getGroundSurface (building, options) {
+
+	var groundSurface = {},
+		groundPolygon = null
+
+	building
+		['bldg:Building']
+		['bldg:boundedBy']
+		.forEach(function (surfaceType) {
+
+			groundSurface = surfaceType['bldg:GroundSurface']
+
+			if (groundSurface)
+				groundPolygon = getPosList(
+					groundSurface
+						['bldg:lod2MultiSurface']
+						['gml:MultiSurface']
+						['gml:surfaceMember'],
+					options.zeroPoint
+				)
+		})
+
+	return groundPolygon
+}
+
+function getSurfaceTypes (building, options) {
+
+	return building['bldg:Building']['bldg:boundedBy']
+		.map(function (surfaceType) {
+
+			var surfaces,
+				Polygons = getOnlyProperty(surfaceType)
+					['bldg:lod2MultiSurface']
+					['gml:MultiSurface']
+					['gml:surfaceMember']
+
+
+			if (Array.isArray(Polygons)) {
+				surfaces = Polygons.map(function (polygon) {
+					return getPosList(polygon, options.zeroPoint)
+				})
+			}
+			else {
+				// Polygons is just one polygon object
+				surfaces = [getPosList(Polygons, options.zeroPoint)]
+			}
+
+			return {
+				surfaceType: Object.keys(surfaceType)[0],
+				surfaces: surfaces.map(function (surface) {
+					return surface
+					//return earcut(surface)
+				})
+			}
+		})
 }
 
 function getAccessors (options) {
@@ -178,6 +264,9 @@ function getPasses (options) {
 
 function convert (buildings, options) {
 
+	if (!Array.isArray(buildings))
+		buildings = [buildings]
+
 	return buildings
 		.map(function (building, index) {
 
@@ -186,34 +275,7 @@ function convert (buildings, options) {
 
 			//console.log(JSON.stringify(building,null,2))
 
-			var surfaceTypes = building['bldg:Building']['bldg:boundedBy']
-					.map(function (surfaceType) {
-
-						var surfaces,
-							Polygons = getOnlyProperty(surfaceType)
-								['bldg:lod2MultiSurface']
-								['gml:MultiSurface']
-								['gml:surfaceMember']
-
-
-						if (Array.isArray(Polygons)) {
-							surfaces = Polygons.map(function (polygon) {
-								return getPosList(polygon, options.zeroPoint)
-							})
-						}
-						else {
-							// Polygons is just one polygon object
-							surfaces = [getPosList(Polygons, options.zeroPoint)]
-						}
-
-						return {
-							surfaceType: Object.keys(surfaceType)[0],
-							surfaces: surfaces.map(function (surface) {
-								return surface
-								//return earcut(surface)
-							})
-						}
-					}),
+			var surfaceTypes = getSurfaceTypes(building, options),
 				buildingBuffer = surfacesToBufferObject(surfaceTypes)
 
 
@@ -223,7 +285,12 @@ function convert (buildings, options) {
 					['gen:doubleAttribute']['gen:value'],
 				gltf: {
 					accessors: getAccessors({count: buildingBuffer.byteLength}),
-					asset: {},
+					asset: {
+						groundSurfaceVertices: getGroundSurface(
+							building,
+							options
+						)
+					},
 					buffers: {
 						building: buildingBuffer
 					},
