@@ -17,10 +17,30 @@ $.get("/buildings", function (buildings) {
 
 	var models = []
 
-	buildings = buildings.slice(0, 5)
+	//buildings = buildings.slice(0, 5)
 
 	buildings.forEach(function (building, index) {
 
+		console.log(building)
+
+		var addedBuilding = viewer.entities.add({
+			name : 'building ' + index,
+			polygon : {
+				hierarchy : building.gltf.asset.groundSurfaceVertices
+					.map(function (vertex) {
+						console.log(vertex)
+						return Cesium.Cartesian3.fromArray(vertex)
+					}),
+				material : Cesium.Color.RED.withAlpha(0.5),
+				outline : true,
+				outlineColor : Cesium.Color.BLACK
+			}
+		})
+
+		if(index === buildings.length - 1)
+			viewer.zoomTo(addedBuilding)
+
+		/*
 		models.push(scene.primitives.add(new Cesium.Model({
 			gltf: buildings[index],
 			modelMatrix: Cesium.Transforms.eastNorthUpToFixedFrame(
@@ -32,10 +52,12 @@ $.get("/buildings", function (buildings) {
 			//scale: 2000
 			minimumPixelSize: 128
 		})))
+		*/
 	})
 
+	/*
 	models[0]
-		.readyPromise
+		//.readyPromise
 		.then(function (model) {
 
 			var pitch,
@@ -73,5 +95,6 @@ $.get("/buildings", function (buildings) {
 		.otherwise(function (error) {
 			alert(error)
 		})
+	*/
 })
 
