@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<CityModel xmlns="http://www.opengis.net/citygml/1.0"
+           xmlns:core="http://www.opengis.net/citygml/base/1.0"
+           xmlns:tex="http://www.opengis.net/citygml/textures/1.0"
+           xmlns:gml="http://www.opengis.net/gml"
+           xmlns:bldg="http://www.opengis.net/citygml/building/1.0"
+           xmlns:app="http://www.opengis.net/citygml/appearance/1.0"
+           xmlns:dem="http://www.opengis.net/citygml/relief/1.0"
+           xmlns:tran="http://www.opengis.net/citygml/transportation/1.0"
+           xmlns:gen="http://www.opengis.net/citygml/generics/1.0"
+           xmlns:frn="http://www.opengis.net/citygml/cityfurniture/1.0"
+           xmlns:wtr="http://www.opengis.net/citygml/waterbody/1.0"
+           xmlns:luse="http://www.opengis.net/citygml/landuse/1.0"
+           xmlns:veg="http://www.opengis.net/citygml/vegetation/1.0"
+           xmlns:xAL="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0">
+	<gml:boundedBy>
+		<gml:Envelope srsName="EPSG:28992" srsDimension="3">
+			<gml:lowerCorner>86293.59683 440271.43 0</gml:lowerCorner>
+			<gml:upperCorner>87538.54 442055.62 10.99230196</gml:upperCorner>
+		</gml:Envelope>
+	</gml:boundedBy>
+	<cityObjectMember>
+		<bldg:Building gml:id="{F41028B9-C59D-4E54-B034-FD412D9BEFE5}">
+			<gml:name>{F41028B9-C59D-4E54-B034-FD412D9BEFE5}</gml:name>
+			<gen:doubleAttribute name="TerrainHeight"
+			                     xmlns:gen="http://www.opengis.net/citygml/generics/1.0">
+				<gen:value>-2.87</gen:value>
+			</gen:doubleAttribute>
+			<gen:stringAttribute name="bron_geo">
+				<gen:value>Lidar 15-30 punten - nov. 2008</gen:value>
+			</gen:stringAttribute>
+			<gen:stringAttribute name="bron_tex">
+				<gen:value>UltraCAM-X 10cm juni 2008</gen:value>
+			</gen:stringAttribute>
+			<gen:stringAttribute name="status">
+				<gen:value>1</gen:value>
+			</gen:stringAttribute>
+			<gen:stringAttribute name="voll_tex">
+				<gen:value>complete</gen:value>
+			</gen:stringAttribute>
+			<bldg:boundedBy>
+				<bldg:RoofSurface
+						gml:id="fme-gen-616e51c1-17f4-4730-85bd-e311d42fdedf">
+					<bldg:lod2MultiSurface>
+						<gml:MultiSurface srsName="EPSG:28992" srsDimension="3">
+							<gml:surfaceMember>
+								<gml:Polygon
+										xmlns:gml="http://www.opengis.net/gml"
+										gml:id="2e805165-72fe-4c27-b636-cc353387f002">
+									<gml:exterior>
+										<gml:LinearRing
+												gml:id="12690cca-1358-4dbe-9d63-810883a52066">
+											<gml:posList>86690.27 441899.93 2.544656435 86691.41 441896 2.544656435 86694.52 441896.87 2.544656435 86693.42 441900.78 2.544656435 86690.27 441899.93 2.544656435</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:surfaceMember>
+						</gml:MultiSurface>
+					</bldg:lod2MultiSurface>
+				</bldg:RoofSurface>
+			</bldg:boundedBy>
+			<bldg:boundedBy>
+				<bldg:GroundSurface
+						gml:id="fme-gen-88fa3814-a1d0-477f-a2b5-c03c19fb817a">
+					<bldg:lod2MultiSurface>
+						<gml:MultiSurface srsName="EPSG:28992" srsDimension="3">
+							<gml:surfaceMember>
+								<gml:Polygon
+										xmlns:gml="http://www.opengis.net/gml"
+										gml:id="cffbddb0-b7e1-413a-8cba-25bb637d3e8b">
+									<gml:exterior>
+										<gml:LinearRing
+												gml:id="fe94d9b4-15a6-4181-8fc9-81ed03b8e51f">
+											<gml:posList>86693.42 441900.78 0 86694.52 441896.87 0 86691.41 441896 0 86690.27 441899.93 0 86693.42 441900.78 0</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:surfaceMember>
+						</gml:MultiSurface>
+					</bldg:lod2MultiSurface>
+				</bldg:GroundSurface>
+			</bldg:boundedBy>
+			<bldg:boundedBy>
+				<bldg:WallSurface
+						gml:id="fme-gen-91d7f292-33e3-4a7c-bddc-bb9bfcbc34db">
+					<bldg:lod2MultiSurface>
+						<gml:MultiSurface srsName="EPSG:28992" srsDimension="3">
+							<gml:surfaceMember>
+								<gml:Polygon
+										xmlns:gml="http://www.opengis.net/gml"
+										gml:id="7d1f0af3-1945-4b80-bbff-b6a82ff8a46e">
+									<gml:exterior>
+										<gml:LinearRing
+												gml:id="25bed02f-dd3a-418c-b245-84cb23dc6555">
+											<gml:posList>86690.27 441899.93 2.544656435 86693.42 441900.78 2.544656435 86693.42 441900.78 0 86690.27 441899.93 0 86690.27 441899.93 2.544656435</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:surfaceMember>
+							<gml:surfaceMember>
+								<gml:Polygon
+										xmlns:gml="http://www.opengis.net/gml"
+										gml:id="0a51ec74-d70c-4f65-a3a1-2c6f026de016">
+									<gml:exterior>
+										<gml:LinearRing
+												gml:id="b70e79ab-10bd-448b-ae45-07f17a7130eb">
+											<gml:posList>86693.42 441900.78 2.544656435 86694.52 441896.87 2.544656435 86694.52 441896.87 0 86693.42 441900.78 0 86693.42 441900.78 2.544656435</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:surfaceMember>
+							<gml:surfaceMember>
+								<gml:Polygon
+										xmlns:gml="http://www.opengis.net/gml"
+										gml:id="8966a14c-de02-4baa-af79-df38690637b1">
+									<gml:exterior>
+										<gml:LinearRing
+												gml:id="4c9b0d9e-20f5-4ddd-bc58-7004d1e9792e">
+											<gml:posList>86694.52 441896.87 2.544656435 86691.41 441896 2.544656435 86691.41 441896 0 86694.52 441896.87 0 86694.52 441896.87 2.544656435</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:surfaceMember>
+							<gml:surfaceMember>
+								<gml:Polygon
+										xmlns:gml="http://www.opengis.net/gml"
+										gml:id="e3a577d6-375e-40f4-98d2-4029ee49dddc">
+									<gml:exterior>
+										<gml:LinearRing
+												gml:id="cb611917-2293-416b-b915-79601b1f537f">
+											<gml:posList>86691.41 441896 2.544656435 86690.27 441899.93 2.544656435 86690.27 441899.93 0 86691.41 441896 0 86691.41 441896 2.544656435</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:surfaceMember>
+						</gml:MultiSurface>
+					</bldg:lod2MultiSurface>
+				</bldg:WallSurface>
+			</bldg:boundedBy>
+			<app:appearance>
+				<app:Appearance gml:id="2935e23c-1d1e-4a02-b2c5-639db8912960">
+					<app:theme>rgbTexture</app:theme>
+					<app:surfaceDataMember>
+						<app:ParameterizedTexture
+								gml:id="587449e6-a270-4131-9dec-d069eb51da3f">
+							<app:imageURI>appearances\0452_0_7.jpg</app:imageURI>
+							<app:mimeType>image/jpeg</app:mimeType>
+							<app:target
+									uri="#2e805165-72fe-4c27-b636-cc353387f002">
+								<app:TexCoordList>
+									<app:textureCoordinates
+											ring="#12690cca-1358-4dbe-9d63-810883a52066">0.9110 0.3181 0.8580 0.3034 0.8690 0.2615 0.9217 0.2756 0.9110 0.3181
+									</app:textureCoordinates>
+								</app:TexCoordList>
+							</app:target>
+						</app:ParameterizedTexture>
+					</app:surfaceDataMember>
+					<app:surfaceDataMember>
+						<app:ParameterizedTexture
+								gml:id="bb5a54d9-973b-4cac-a2f7-9debd645048d">
+							<app:imageURI>appearances\0452_0_7.jpg</app:imageURI>
+							<app:mimeType>image/jpeg</app:mimeType>
+							<app:target
+									uri="#0a51ec74-d70c-4f65-a3a1-2c6f026de016">
+								<app:TexCoordList>
+									<app:textureCoordinates
+											ring="#b70e79ab-10bd-448b-ae45-07f17a7130eb">0.9096 0.2596 0.8575 0.2450 0.8699 0.2350 0.9218 0.2495 0.9096 0.2596
+									</app:textureCoordinates>
+								</app:TexCoordList>
+							</app:target>
+						</app:ParameterizedTexture>
+					</app:surfaceDataMember>
+					<app:surfaceDataMember>
+						<app:ParameterizedTexture
+								gml:id="2edd5ba6-3109-4c51-af28-77f7dd9c6bfa">
+							<app:imageURI>appearances\0452_0_8.jpg</app:imageURI>
+							<app:mimeType>image/jpeg</app:mimeType>
+							<app:target
+									uri="#e3a577d6-375e-40f4-98d2-4029ee49dddc">
+								<app:TexCoordList>
+									<app:textureCoordinates
+											ring="#cb611917-2293-416b-b915-79601b1f537f">0.0082 0.0124 0.0609 0.0277 0.0531 0.0358 0.0005 0.0206 0.0082 0.0124
+									</app:textureCoordinates>
+								</app:TexCoordList>
+							</app:target>
+						</app:ParameterizedTexture>
+					</app:surfaceDataMember>
+					<app:surfaceDataMember>
+						<app:ParameterizedTexture
+								gml:id="5bacc2f8-e1d2-4674-8cd4-64a4c6cda6d9">
+							<app:imageURI>appearances\0452_0_9.jpg</app:imageURI>
+							<app:mimeType>image/jpeg</app:mimeType>
+							<app:target
+									uri="#8966a14c-de02-4baa-af79-df38690637b1">
+								<app:TexCoordList>
+									<app:textureCoordinates
+											ring="#4c9b0d9e-20f5-4ddd-bc58-7004d1e9792e">0.4394 0.1552 0.4509 0.1139 0.4685 0.1148 0.4570 0.1561 0.4394 0.1552
+									</app:textureCoordinates>
+								</app:TexCoordList>
+							</app:target>
+						</app:ParameterizedTexture>
+					</app:surfaceDataMember>
+					<app:surfaceDataMember>
+						<app:ParameterizedTexture
+								gml:id="515cd65a-6a68-48a9-a587-27855a479070">
+							<app:imageURI>appearances\0452_0_9.jpg</app:imageURI>
+							<app:mimeType>image/jpeg</app:mimeType>
+							<app:target
+									uri="#7d1f0af3-1945-4b80-bbff-b6a82ff8a46e">
+								<app:TexCoordList>
+									<app:textureCoordinates
+											ring="#25bed02f-dd3a-418c-b245-84cb23dc6555">0.5614 0.2917 0.5721 0.2492 0.5847 0.2573 0.5740 0.2997 0.5614 0.2917
+									</app:textureCoordinates>
+								</app:TexCoordList>
+							</app:target>
+						</app:ParameterizedTexture>
+					</app:surfaceDataMember>
+				</app:Appearance>
+			</app:appearance>
+		</bldg:Building>
+	</cityObjectMember>
+</CityModel>
