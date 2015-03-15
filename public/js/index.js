@@ -56,4 +56,3 @@ $.get("/db/hi", function(data){
     })
 
 })
-

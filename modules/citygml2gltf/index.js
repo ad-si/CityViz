@@ -1,7 +1,6 @@
 var fs = require('fs'),
 	util = require('util'),
 	assert = require('assert'),
-
 	parser = require('xml2json'),
 	proj4 = require('proj4')
 

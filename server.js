@@ -274,11 +274,5 @@ function createServiceUrl(array){
 
 	serviceUrl = projectServiceUrlParts.join("") + JSON.stringify(geometries) + "}&f=pjson"
 
-	if (!serviceUrl)
-		return 'No url specified.'
-
-	if (!serviceUrl.protocol)
-		serviceUrl.protocol = 'http:'
-
 	return serviceUrl
 }
