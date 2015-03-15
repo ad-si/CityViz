@@ -155,7 +155,7 @@ app.get("/db/*", function(req, res, next){
 	MongoClient.connect("mongodb://localhost:27017/cityViz", function(err, db) {
 		if(!err) {
 			console.log("We are connected")
-			var collection = db.collection('buildings')
+			var collection = db.collection('buildings')//Nordkethel')
 			if(collection != null)
 				collection.find({}).toArray(function(err, items){
 					res.status(200).send({err: err, result: items})
