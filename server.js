@@ -150,7 +150,13 @@ app.get('/proxy/*', function (req, res, next) {
 	)
 })
 
-app.get("/db/*", function(req, res, next){
+
+app.get("/db/info", function(req, res, next){
+	console.log(req.query.id)
+	res.status(200).send({buildingName: "Rathaus", height: "45m"})
+})
+
+app.get("/db/buildings", function(req, res, next){
 	// Connect to the db
 	MongoClient.connect("mongodb://localhost:27017/cityViz", function(err, db) {
 		if(!err) {
