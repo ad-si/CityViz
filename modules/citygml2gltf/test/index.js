@@ -34,6 +34,3 @@ describe('Citygml2gltf', function () {
 		)
 	})
 })
-
-
-

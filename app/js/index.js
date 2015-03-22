@@ -13,7 +13,7 @@ var viewer = new Cesium.Viewer('cesiumContainer'),
 //Cesium.Transforms.headingPitchRollToFixedFrame(origin, heading, pitch, roll)
 
 
-$.get("/buildings", function (buildings) {
+$.get('/buildings', function (buildings) {
 
 	var models = []
 
@@ -24,20 +24,20 @@ $.get("/buildings", function (buildings) {
 		console.log(building)
 
 		var addedBuilding = viewer.entities.add({
-			name : 'building ' + index,
-			polygon : {
-				hierarchy : building.gltf.asset.groundSurfaceVertices
+			name: 'building ' + index,
+			polygon: {
+				hierarchy: building.gltf.asset.groundSurfaceVertices
 					.map(function (vertex) {
 						console.log(vertex)
 						return Cesium.Cartesian3.fromArray(vertex)
 					}),
-				material : Cesium.Color.RED.withAlpha(0.5),
-				outline : true,
-				outlineColor : Cesium.Color.BLACK
+				material: Cesium.Color.RED.withAlpha(0.5),
+				outline: true,
+				outlineColor: Cesium.Color.BLACK
 			}
 		})
 
-		if(index === buildings.length - 1)
+		if (index === buildings.length - 1)
 			viewer.zoomTo(addedBuilding)
 
 		/*

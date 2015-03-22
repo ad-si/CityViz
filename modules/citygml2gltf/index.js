@@ -204,12 +204,12 @@ function getSurfaceTypes (building, options) {
 function getAccessors (options) {
 	return {
 		'accessor-01': {
-			bufferView: "bufferView_01",
+			bufferView: 'bufferView_01',
 			byteOffset: 0,
 			byteStride: 0,
 			componentType: 5126, // Float
 			count: options.count,
-			type: "VEC3"
+			type: 'VEC3'
 		}
 	}
 }
@@ -217,38 +217,39 @@ function getAccessors (options) {
 
 function getPasses (options) {
 
+	// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 	return {
 		defaultPass: {
 			details: {
-				type: "COLLADA-1.4.1/commonProfile",
+				type: 'COLLADA-1.4.1/commonProfile',
 				commonProfile: {
 					extras: {
 						doubleSided: false
 					},
-					lightingModel: "Phong",
+					lightingModel: 'Phong',
 					parameters: [
-						"diffuse",
-						"modelViewMatrix",
-						"normalMatrix",
-						"projectionMatrix",
-						"shininess",
-						"specular"
+						'diffuse',
+						'modelViewMatrix',
+						'normalMatrix',
+						'projectionMatrix',
+						'shininess',
+						'specular'
 					]
 				}
 			},
 			instanceProgram: {
 				attributes: {
-					a_normal: "normal",
-					a_position: "position"
+					a_normal: 'normal',
+					a_position: 'position'
 				},
-				program: "program_0",
+				program: 'program_0',
 				uniforms: {
-					u_diffuse: "diffuse",
-					u_modelViewMatrix: "modelViewMatrix",
-					u_normalMatrix: "normalMatrix",
-					u_projectionMatrix: "projectionMatrix",
-					u_shininess: "shininess",
-					u_specular: "specular"
+					u_diffuse: 'diffuse',
+					u_modelViewMatrix: 'modelViewMatrix',
+					u_normalMatrix: 'normalMatrix',
+					u_projectionMatrix: 'projectionMatrix',
+					u_shininess: 'shininess',
+					u_specular: 'specular'
 				}
 			},
 			states: {
@@ -259,6 +260,7 @@ function getPasses (options) {
 			}
 		}
 	}
+	// jscs:enable
 }
 
 function convert (buildings, options) {
@@ -278,6 +280,7 @@ function convert (buildings, options) {
 				buildingBuffer = surfacesToBufferObject(surfaceTypes)
 
 
+			// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 			return {
 				gmlid: building['bldg:Building']['gml:id'],
 				terrainHeight: building['bldg:Building']
@@ -295,7 +298,7 @@ function convert (buildings, options) {
 					},
 					bufferViews: {
 						bufferView_01: {
-							buffer: "building",
+							buffer: 'building',
 							byteLength: buildingBuffer.byteLength,
 							byteOffset: 0,
 							target: 34962
@@ -322,14 +325,14 @@ function convert (buildings, options) {
 									1
 								]
 							},
-							type: "directional"
+							type: 'directional'
 						}
 					},
 					materials: {
 						material_01: {
-							name: "Material 1",
+							name: 'Material 1',
 							instanceTechnique: {
-								technique: "technique1",
+								technique: 'technique1',
 								values: {
 									diffuse: [
 										0.8,
@@ -350,16 +353,16 @@ function convert (buildings, options) {
 					},
 					meshes: {
 						buildingMesh: {
-							name: "Building Mesh",
+							name: 'Building Mesh',
 							primitives: [
 								{
 									attributes: {
-										NORMAL: "accessor-01",
-										POSITION: "accessor-01",
-										TEXCOORD_0: "accessor-01"
+										NORMAL: 'accessor-01',
+										POSITION: 'accessor-01',
+										TEXCOORD_0: 'accessor-01'
 									},
-									indices: "accessor-01",
-									material: "material_01",
+									indices: 'accessor-01',
+									material: 'material_01',
 									primitive: 2 // Line loop
 								}
 							]
@@ -385,11 +388,11 @@ function convert (buildings, options) {
 					programs: {
 						program_0: {
 							attributes: [
-								"a_normal",
-								"a_position"
+								'a_normal',
+								'a_position'
 							],
-							fragmentShader: "building_FS",
-							vertexShader: "building_VS"
+							fragmentShader: 'building_FS',
+							vertexShader: 'building_VS'
 						}
 					},
 					//samplers: {},
@@ -397,7 +400,7 @@ function convert (buildings, options) {
 					scenes: {
 						defaultScene: {
 							nodes: [
-								'building',
+								'building'
 								//'camera1',
 								//'directionalLight1'
 							]
@@ -406,11 +409,11 @@ function convert (buildings, options) {
 					shaders: {
 						building_FS: {
 							type: 35632,
-							uri: "/shaders/building_FS.glsl"
+							uri: '/shaders/building_FS.glsl'
 						},
 						building_VS: {
 							type: 35633,
-							uri: "/shaders/building_VS.glsl"
+							uri: '/shaders/building_VS.glsl'
 						}
 					},
 					skins: {},
@@ -422,23 +425,23 @@ function convert (buildings, options) {
 									type: 35666
 								},
 								modelViewMatrix: {
-									semantic: "MODELVIEW",
+									semantic: 'MODELVIEW',
 									type: 35676
 								},
 								normal: {
-									semantic: "NORMAL",
+									semantic: 'NORMAL',
 									type: 35665
 								},
 								normalMatrix: {
-									semantic: "MODELVIEWINVERSETRANSPOSE",
+									semantic: 'MODELVIEWINVERSETRANSPOSE',
 									type: 35675
 								},
 								position: {
-									semantic: "POSITION",
+									semantic: 'POSITION',
 									type: 35665
 								},
 								projectionMatrix: {
-									semantic: "PROJECTION",
+									semantic: 'PROJECTION',
 									type: 35676
 								},
 								shininess: {
@@ -448,12 +451,13 @@ function convert (buildings, options) {
 									type: 35666
 								}
 							},
-							pass: "defaultPass",
+							pass: 'defaultPass',
 							passes: getPasses()
 						}
 					}
 				}
 			}
+			// jscs:enable
 		})
 }
 

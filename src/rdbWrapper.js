@@ -1,5 +1,5 @@
-var rethinkdb = require('rethinkdbdash')(),
-	rdbWrapper = {}
+var rethinkdb  = require('rethinkdbdash')(),
+    rdbWrapper = {}
 
 
 rdbWrapper.createTable = function () {
@@ -28,7 +28,7 @@ rdbWrapper.insert = function (data) {
 		})
 }
 
-rdbWrapper.getAll = function(){
+rdbWrapper.getAll = function () {
 
 	return rethinkdb
 		.db('cityviz')

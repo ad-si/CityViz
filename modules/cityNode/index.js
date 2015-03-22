@@ -147,7 +147,7 @@ module.exports.setupDatabase = function () {
 
 	pgQuery.connectionParameters = intitalDbString
 
-	pgQuery("create user cityviz with password 'cityviz'")
+	pgQuery('create user cityviz with password "cityviz"')
 		.then(
 		function () {
 			console.log('User created')
@@ -160,7 +160,7 @@ module.exports.setupDatabase = function () {
 		})
 
 		.then(function () {
-			return pgQuery("create database cityviz").then(
+			return pgQuery('create database cityviz').then(
 				function () {
 					console.log('Database created')
 				},
@@ -175,7 +175,7 @@ module.exports.setupDatabase = function () {
 
 		.then(function () {
 			return pgQuery(
-				"grant all privileges on database cityviz to cityviz").then(
+				'grant all privileges on database cityviz to cityviz').then(
 				function () {
 					console.log('Privileges granted')
 				},

@@ -1,39 +1,36 @@
-"use strict"
+'use strict'
 
 // establish DB connection
-var MongoClient = require('mongodb').MongoClient;
-
-
-
-var express = require('express'),
+var MongoClient = require('mongodb').MongoClient,
+	express = require('express'),
 	compression = require('compression'),
 	url = require('url'),
 	request = require('request'),
 
 	yargs = require('yargs').options({
-		'port': {
-			'default': 8080,
-			'description': 'Port to listen on.'
+		port: {
+			default: 8080,
+			description: 'Port to listen on.'
 		},
-		'public': {
-			'type': 'boolean',
-			'description': 'Run a public server that listens ' +
-			               'on all interfaces.'
+		public: {
+			type: 'boolean',
+			description: 'Run a public server that listens ' +
+			'on all interfaces.'
 		},
 		'upstream-proxy': {
-			'description': 'A standard proxy server that will be used to' +
-			               ' retrieve data. Specify a URL including port, ' +
-			               'e.g. "http://proxy:8000".'
+			description: 'A standard proxy server that will be used to' +
+			' retrieve data. Specify a URL including port, ' +
+			'e.g. "http://proxy:8000".'
 		},
 		'bypass-upstream-proxy-hosts': {
-			'description': 'A comma separated list of hosts that will ' +
-			               'bypass the specified upstream_proxy, ' +
-			               'e.g. "lanhost1,lanhost2"'
+			description: 'A comma separated list of hosts that will ' +
+			'bypass the specified upstream_proxy, ' +
+			'e.g. "lanhost1,lanhost2"'
 		},
-		'help': {
-			'alias': 'h',
-			'type': 'boolean',
-			'description': 'Show this help.'
+		help: {
+			alias: 'h',
+			type: 'boolean',
+			description: 'Show this help.'
 		}
 	}),
 	argv = yargs.argv,
@@ -42,7 +39,8 @@ var express = require('express'),
 	upstreamProxy,
 	server,
 	mime,
-	app
+	app,
+	projectServiceUrlParts
 
 
 if (argv.help)
@@ -62,7 +60,7 @@ app.use(compression())
 app.use(express.static(__dirname))
 
 
-function getRemoteUrlFromParam (req) {
+function getRemoteUrlFromParam(req) {
 	var remoteUrl = req.params[0]
 	if (remoteUrl) {
 		// add http:// to the URL if no protocol is present
@@ -76,9 +74,14 @@ function getRemoteUrlFromParam (req) {
 	return remoteUrl
 }
 
-dontProxyHeaderRegex = /^(?:Host|Proxy-Connection|Connection|Keep-Alive|Transfer-Encoding|TE|Trailer|Proxy-Authorization|Proxy-Authenticate|Upgrade)$/i;
+dontProxyHeaderRegex = new RegExp(
+	'^(?:Host|Proxy-Connection|Connection|Keep-Alive|' +
+	'Transfer-Encoding|TE|Trailer|' +
+	'Proxy-Authorization|Proxy-Authenticate|Upgrade)$',
+	'i'
+)
 
-function filterHeaders (req, headers) {
+function filterHeaders(req, headers) {
 	var result = {}
 	// filter out headers that are listed in the regex above
 	Object
@@ -151,28 +154,32 @@ app.get('/proxy/*', function (req, res, next) {
 })
 
 
-app.get("/db/info", function(req, res, next){
+app.get('/db/info', function (req, res, next) {
 	console.log(req.query.id)
-	res.status(200).send({buildingName: "Rathaus", height: "45m"})
+	res.status(200).send({buildingName: 'Rathaus', height: '45m'})
 })
 
-app.get("/db/buildings", function(req, res, next){
+app.get('/db/buildings', function (req, res, next) {
 	// Connect to the db
-	MongoClient.connect("mongodb://localhost:27017/cityViz", function(err, db) {
-		if(!err) {
-			console.log("We are connected")
-			var collection = db.collection('buildings')//Nordkethel')
-			if(collection != null)
-				collection.find({}).toArray(function(err, items){
-					res.status(200).send({err: err, result: items})
-				})
-			else
-				res.status(404).send({result: "Could not retrieve data from db..."})
-		}
-	})
+	MongoClient.connect(
+		'mongodb://localhost:27017/cityViz',
+		function (err, db) {
+			if (!err) {
+				console.log('We are connected')
+				var collection = db.collection('buildings')//Nordkethel')
+				if (collection != null)
+					collection.find({}).toArray(function (err, items) {
+						res.status(200).send({err: err, result: items})
+					})
+				else
+					res
+						.status(404)
+						.send({result: 'Could not retrieve data from db...'})
+			}
+		})
 })
 
-app.get("/project/*", function(req, res, next){
+app.get('/project/*', function (req, res, next) {
 	var proxy,
 		serviceUrl = createServiceUrl([
 			[86693.42, 441900.78],
@@ -226,12 +233,12 @@ server = app.listen(
 server.on('error', function (e) {
 	if (e.code === 'EADDRINUSE') {
 		console.log('Error: Port %d is already in use, ' +
-		            'select a different port.', argv.port)
+		'select a different port.', argv.port)
 		console.log('Example: node server.js --port %d', argv.port + 1)
 	}
 	else if (e.code === 'EACCES') {
 		console.log('Error: This process does not have permission to ' +
-		            'listen on port %d.', argv.port)
+		'listen on port %d.', argv.port)
 		if (argv.port < 1024)
 			console.log('Try a port number higher than 1024.')
 	}
@@ -250,35 +257,41 @@ process.on('SIGINT', function () {
 	})
 })
 
-
 /**** Project coordinates from 28992 to 4326
 
- http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=28992&outSR=4326&geometries=%7B%0D%0A%22geometryType%22%3A%22esriGeometryPoint%22%2C%0D%0A%22geometries%22%3A%5B%7B%22x%22%3A86693.42%2C+%22y%22%3A+441900.78%7D%5D%0D%0A%7D&f=JSON
+ http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Geometry/
+ GeometryServer/project?inSR=28992&
+ outSR=4326&geometries=%7B%0D%0A%22geometryType
+ %22%3A%22esriGeometryPoint%22%2C%0D%0A%22geometries%22%3A%5B%7B%22x%22%
+ 3A86693.42%2C+%22y%22%3A+441900.78%7D%5D%0D%0A%7D&f=JSON
 
  ****/
 
-var projectServiceUrlParts = [
-	"http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?",
-	"inSR=28992",
-	"&outSR=4326",
-	"&geometries={",
-	"\"geometryType\":\"esriGeometryPoint\",",
-	"\"geometries\":"
+projectServiceUrlParts = [
+	'http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Geometry/' +
+	'GeometryServer/project?',
+	'inSR=28992',
+	'&outSR=4326',
+	'&geometries={',
+	'"geometryType":"esriGeometryPoint",',
+	'"geometries":'
 ]
 
 //expect array like [ [1.1, 2.1], [2.1, 1.1] ]
-function createServiceUrl(array){
+function createServiceUrl(array) {
 	var geometries = [],
 		serviceUrl
 
-	array.forEach(function(point){
+	array.forEach(function (point) {
 		geometries.push({
-			"x": point[0],
-			"y": point[1]
+			x: point[0],
+			y: point[1]
 		})
 	})
 
-	serviceUrl = projectServiceUrlParts.join("") + JSON.stringify(geometries) + "}&f=pjson"
+	serviceUrl = projectServiceUrlParts.join('') +
+	JSON.stringify(geometries) +
+	'}&f=pjson'
 
 	return serviceUrl
 }
