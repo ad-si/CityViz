@@ -1,0 +1,127 @@
+{
+    "excludeFiles": [
+      "**/node_modules/**",
+      "*.min.js",
+      "three"
+    ],
+    "requireCurlyBraces": [],
+    "requireSpaceAfterKeywords": [
+      "if",
+      "else",
+      "for",
+      "while",
+      "do",
+      "switch",
+      "return",
+      "try",
+      "catch"
+    ],
+    "requireSpaceBeforeBlockStatements": true,
+    "requireSpacesInFunctionExpression": {
+      "beforeOpeningRoundBrace": true,
+      "beforeOpeningCurlyBrace": true
+    },
+    "requireMultipleVarDecl": "onevar",
+    "requireBlocksOnNewline": true,
+    "disallowEmptyBlocks": true,
+    "disallowSpacesInsideArrayBrackets": true,
+    "disallowSpacesInsideObjectBrackets": true,
+    "disallowSpacesInsideParentheses": true,
+    "disallowQuotedKeysInObjects": true,
+    "disallowDanglingUnderscores": true,
+    "disallowSpaceAfterObjectKeys": true,
+    "requireCommaBeforeLineBreak": true,
+    "requireOperatorBeforeLineBreak": [
+      "?",
+      "+",
+      "/",
+      "*",
+      {
+        "null": null
+      },
+      "=",
+      "==",
+      "===",
+      "!=",
+      "!==",
+      ">",
+      ">=",
+      "<",
+      "<="
+    ],
+    "disallowSpaceAfterBinaryOperators": [
+      "!"
+    ],
+    "disallowSpaceBeforeBinaryOperators": [
+      ","
+    ],
+    "disallowSpaceAfterPrefixUnaryOperators": [
+      "++",
+      "--",
+      "+",
+      "-",
+      null,
+      "!"
+    ],
+    "disallowSpaceBeforePostfixUnaryOperators": [
+      "++",
+      "--"
+    ],
+    "requireSpaceBeforeBinaryOperators": [
+      "?",
+      "+",
+      "-",
+      "/",
+      "*",
+      "=",
+      "==",
+      "===",
+      "!=",
+      "!==",
+      ">",
+      ">=",
+      "<",
+      "<="
+    ],
+    "requireSpaceAfterBinaryOperators": [
+      ",",
+      ":",
+      "?",
+      "+",
+      "-",
+      "/",
+      "*",
+      "=",
+      "==",
+      "===",
+      "!=",
+      "!==",
+      ">",
+      ">=",
+      "<",
+      "<="
+    ],
+    "disallowImplicitTypeConversion": [
+      "numeric",
+      "boolean",
+      "binary"
+    ],
+    "requireCamelCaseOrUpperCaseIdentifiers": true,
+    "disallowKeywords": [
+      "with"
+    ],
+    "disallowMultipleLineStrings": true,
+    "validateLineBreaks": "LF",
+    "validateQuoteMarks": "'",
+    "disallowMixedSpacesAndTabs": "smart",
+    "disallowTrailingWhitespace": true,
+    "disallowTrailingComma": true,
+    "requireKeywordsOnNewLine": [
+      "else"
+    ],
+    "requireLineFeedAtFileEnd": true,
+    "maximumLineLength": 100,
+    "requireCapitalizedConstructors": true,
+    "requireDotNotation": true,
+    "disallowYodaConditions": true
+  }

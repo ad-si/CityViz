@@ -45,9 +45,12 @@
     "promised-mongo": "~0.11.1"
   },
   "scripts": {
-    "test": "node_modules/.bin/mocha test"
+    "test": "mocha test",
+    "checkStyle": "jscs . && jshint ."
   },
   "devDependencies": {
+    "jscs": "^1.11.3",
+    "jshint": "^2.6.3",
     "mocha": "^2.1.0"
   }
 }
