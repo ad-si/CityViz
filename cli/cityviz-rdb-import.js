@@ -39,14 +39,13 @@ rdbWrapper
 					throw error
 
 				buildings.forEach(function (cityObject) {
-					console.log(JSON.stringify(cityObject))
-					/*rdbWrapper
+					rdbWrapper
 						.insert(cityObject)
 						.then(function () {
 							console.log(
 								'Imported cityobject ' + cityObject.gmlid
 							)
-						})*/
+						})
 				})
 			})
 	})
