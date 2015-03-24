@@ -2,20 +2,23 @@
 
 ## Getting Started
 
-1. Clone repository from [projects.hpi3d.de](https://projects.hpi3d.de)
-	website like this:
-	`$ git clone https://projects.hpi3d.de/git/06-webgl-client`
-
-	If you get a warning about SSL problems try following:
-	`git -c http.sslVerify=false clone https://projects.hpi3d.de/git/06-webgl-client`
+1. Clone repository from
+	[github.com/adius/CityViz](https://github.com/adius/CityViz) like this:
+	`$ git clone https://github.com/adius/CityViz`
 1. Run `$ npm install` to install all dependencies
 1. Start postgres server
+1. In order to make the `cityviz` command available on your machine
+   run following command in the CityViz root directory:
+
+   ```sh
+   npm link
+   ```
 1. Run `$ cityviz setup` to create the CityViz database
+1. If you encounter any problems during setup,
+	drop the CityViz database first with `$ cityviz dropdb` and try again.
 1. Run `$ cityviz import <citygml-file|directory>` to import specified files
 1. Run `$ cityviz serve` to start server
 1. Open [localhost:3000](http://localhost:3000)
-
-You can use `$ cityviz dropdb` to drop the CityViz database.
 
 
 ## Detailed Installation
@@ -30,7 +33,7 @@ On Mac:
 1. Follow the instructions on [postgresapp.com/documentation
 	](http://postgresapp.com/documentation/cli-tools.html) to add the `psql`
 	command to your command line.
-1. Download [3DCityDB](http://3dcitydb.org/3dcitydb/downloads)
+1. Download [3DCityDB](http://www.3dcitydb.org/3dcitydb/downloads)
 1. Run setup.jar to install 3DCityDB
 1.
 	- Create a new database in postgres
@@ -49,12 +52,33 @@ On Mac:
 1. Import your files with the Importer/Exporter.
 
 
+### Rethinkdb
+
+```sh
+brew update && brew install rethinkdb
+```
+
+Start RethinkDB simply by executing `rethinkdb` in your command line.
+
+Then open the admin interface on [localhost:8080](http://localhost:8080)
+and create a database called `cityviz`.
+
+
 ## Usage
 
 First you need to set the database settings in `config.yaml`
 according to your environment.
 In order to get an overview over available commands run the cli script:
 `$ node ./bin/cli.js --help`
+
+
+### Import Data
+
+In order to import citygml files into your database run:
+
+```sh
+cityviz import <path/to/file.gml>
+```
 
 
 ## Links
