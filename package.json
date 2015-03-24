@@ -26,7 +26,7 @@
     "better-path": "^0.2.0",
     "cesiumjs": "1.7.2",
     "clone": "^1.0.0",
-    "commander": "^2.6.0",
+    "commander": "2.6.0",
     "compression": "~1.4.1",
     "es6-promise": "^2.0.1",
     "express": "^4.12.2",
@@ -36,13 +36,13 @@
     "mongodb": "~1.4.31",
     "pg": "^4.2.0",
     "pg-query": "^0.11.0",
+    "promised-mongo": "~0.11.1",
     "request": "~2.53.0",
     "rethinkdbdash": "^1.16.10",
     "temp": "^0.8.1",
     "three": "^0.69.0",
     "xml2json": "^0.6.1",
-    "yargs": "~3.3.1",
-    "promised-mongo": "~0.11.1"
+    "yargs": "~3.3.1"
   },
   "scripts": {
     "test": "mocha test",
