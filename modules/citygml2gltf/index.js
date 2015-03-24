@@ -277,21 +277,23 @@ function convert (buildings, options) {
 			//console.log(JSON.stringify(building,null,2))
 
 			var surfaceTypes = getSurfaceTypes(building, options),
-				buildingBuffer = surfacesToBufferObject(surfaceTypes)
+				buildingBuffer = surfacesToBufferObject(surfaceTypes),
+				gmlId = building['bldg:Building']['gml:id'].slice(1,-1)
 
 
 			// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 			return {
-				gmlid: building['bldg:Building']['gml:id'],
+				gmlid: gmlId,
 				terrainHeight: building['bldg:Building']
 					['gen:doubleAttribute']['gen:value'],
+				groundSurfaceVertices: getGroundSurface(
+					building,
+					options
+				),
 				gltf: {
 					accessors: getAccessors({count: buildingBuffer.byteLength}),
 					asset: {
-						groundSurfaceVertices: getGroundSurface(
-							building,
-							options
-						)
+						gmlid: gmlId
 					},
 					buffers: {
 						building: buildingBuffer
