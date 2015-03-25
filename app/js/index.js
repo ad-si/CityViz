@@ -7,13 +7,31 @@ var viewer = new Cesium.Viewer('cesiumContainer'),
 	roll = Cesium.Math.toRadians(0),
 
 	origin = Cesium.Cartesian3.fromDegrees(4.3004619, 51.5503706, height),
-	modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(origin)
-
+	modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(origin),
+	urlParameters = window
+		.location
+		.search
+		.substring(1)
+		.split('&')
+		.reduce(function (previous, next) {
+			var keyValue = next.split('=')
+			previous[keyValue[0]] = keyValue[1]
+			return previous
+		}, {}),
+	queryString = '/buildings/1000'
 
 //Cesium.Transforms.headingPitchRollToFixedFrame(origin, heading, pitch, roll)
 
 
-$.get('/buildings', function (buildings) {
+if (urlParameters.numberOfObjects)
+	queryString = '/buildings/' + urlParameters.numberOfObjects
+
+if (urlParameters.allObjects)
+	queryString = '/buildings'
+
+
+
+$.get(queryString, function (buildings) {
 
 	console.log('Number of buildings:', buildings.length)
 

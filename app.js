@@ -19,6 +19,14 @@ app.get('/buildings', function (request, response) {
 		})
 })
 
+app.get('/buildings/:count', function (request, response) {
+	rdbWrapper
+		.get(request.params.count)
+		.then(function (buildings) {
+			response.json(buildings)
+		})
+})
+
 
 app.listen(port, function () {
 	console.log('Server listening at http://localhost:' + port)

@@ -34,4 +34,14 @@ rdbWrapper.getAll = function () {
 }
 
 
+rdbWrapper.get = function (count) {
+
+	return rethinkdb
+		.db('cityviz')
+		.table('buildings')
+		.slice(0, Number(count))
+		.run()
+}
+
+
 module.exports = rdbWrapper
