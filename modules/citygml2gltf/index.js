@@ -78,16 +78,26 @@ function toLongLat(vertex) {
 
 function getPosList(polygon, zeroPoint) {
 
-	var coordsList = polygon
+	var coordsList,
+		coordObjects,
+		arrayStyle,
+		subtractZeroPoint,
+		i
+
+
+	if (polygon['gml:Polygon']) {
+		coordsList = polygon
 			['gml:Polygon']
 			['gml:exterior']
 			['gml:LinearRing']
 			['gml:posList']
-			.split(' '),
-		coordObjects = [],
-		arrayStyle = true,
-		subtractZeroPoint = false,
-		i
+			.split(' ');
+		coordObjects = []
+		arrayStyle = true
+		subtractZeroPoint = false
+	}
+	else
+		return
 
 	if (!subtractZeroPoint)
 		zeroPoint = {x: 0, y: 0, z: 0}
@@ -148,25 +158,23 @@ function surfacesToBufferObject(surfaceTypes) {
 
 }
 
-function getGroundSurface(building, options) {
+function getGroundSurface(cityObject, options) {
 
 	var groundSurface = {},
-		groundPolygon = null
+		groundPolygon = null,
+		bounds = cityObject['bldg:Building']['bldg:boundedBy']
 
-	if (building['bldg:Building']['bldg:boundedBy']) {
-		building
-			['bldg:Building']
-			['bldg:boundedBy']
-			.forEach(function (surfaceType) {
+	if (bounds && Array.isArray(bounds)) {
+		bounds.forEach(function (surfaceType) {
 
-				groundSurface = surfaceType['bldg:GroundSurface']
+			groundSurface = surfaceType['bldg:GroundSurface']
 
-				if (groundSurface)
-					groundPolygon = convertGroundSurface(
-						groundSurface,
-						options.zeroPoint
-					)
-			})
+			if (groundSurface)
+				groundPolygon = convertGroundSurface(
+					groundSurface,
+					options.zeroPoint
+				)
+		})
 
 		return groundPolygon
 	}
@@ -184,9 +192,12 @@ function convertGroundSurface(groundSurface, zeroPoint) {
 
 function getSurfaceTypes(building, options) {
 
+	if (building['bldg:Building']['bldg:boundedBy'] &&
+		Array.isArray(building['bldg:Building']['bldg:boundedBy'])) {
 
-	if (building['bldg:Building']['bldg:boundedBy'])
-		return building['bldg:Building']['bldg:boundedBy']
+		return building
+			['bldg:Building']
+			['bldg:boundedBy']
 			.map(function (surfaceType) {
 
 				var surfaces,
@@ -214,6 +225,7 @@ function getSurfaceTypes(building, options) {
 					})
 				}
 			})
+	}
 }
 
 function getAccessors(options) {
@@ -286,8 +298,6 @@ function convert(cityObjects, options) {
 	return cityObjects
 		.map(function (cityObject) {
 
-			console.log(getOnlyProperty(cityObject)['gml:id'])
-
 			var surfaceTypes,
 				buildingBuffer,
 				gmlId,
@@ -321,6 +331,11 @@ function convert(cityObjects, options) {
 			else
 				return
 
+
+			console.log(
+				'Converted cityObject',
+				getOnlyProperty(cityObject)['gml:id']
+			)
 
 			// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 			return {
@@ -530,6 +545,12 @@ module.exports = function (options, callback) {
 			y: zeroCoords[1],
 			z: zeroCoords[2]
 		}
+
+		console.log(
+			'\n\nConvert',
+			inputAsJson.CityModel.cityObjectMember.length,
+			'cityObjects\n'
+		)
 
 		buildings = convert(
 			inputAsJson.CityModel.cityObjectMember,
