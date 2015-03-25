@@ -1,3 +1,5 @@
+'use strict'
+
 var fs = require('fs'),
 	util = require('util'),
 	assert = require('assert'),
@@ -5,7 +7,7 @@ var fs = require('fs'),
 	proj4 = require('proj4')
 
 
-function inspect (item) {
+function inspect(item) {
 	console.log(util.inspect(
 		item,
 		{
@@ -16,7 +18,7 @@ function inspect (item) {
 }
 
 
-function toBuffer (arrayBuffer) {
+function toBuffer(arrayBuffer) {
 
 	var buffer,
 		i,
@@ -37,7 +39,7 @@ function toBuffer (arrayBuffer) {
 	}
 }
 
-function getOnlyProperty (object) {
+function getOnlyProperty(object) {
 
 	var keys = Object.keys(object)
 
@@ -50,7 +52,7 @@ function getOnlyProperty (object) {
 		)
 }
 
-function toLongLat (vertex) {
+function toLongLat(vertex) {
 
 	var temp
 
@@ -74,7 +76,7 @@ function toLongLat (vertex) {
 	return [temp[0], temp[1], vertex[2]]
 }
 
-function getPosList (polygon, zeroPoint) {
+function getPosList(polygon, zeroPoint) {
 
 	var coordsList = polygon
 			['gml:Polygon']
@@ -110,7 +112,10 @@ function getPosList (polygon, zeroPoint) {
 	return coordObjects
 }
 
-function surfacesToBufferObject (surfaceTypes) {
+function surfacesToBufferObject(surfaceTypes) {
+
+	if (!surfaceTypes)
+		return
 
 	var coordinates = new Float32Array(Array.prototype.concat.apply(
 			[],
@@ -136,71 +141,82 @@ function surfacesToBufferObject (surfaceTypes) {
 	return {
 		byteLength: coordinates.length * 4,
 		type: 'arraybuffer',
-		uri:        'data:application/octet-stream;base64,' +
-		            coordinateBuffer.toString('base64')
+		uri: 'data:application/octet-stream;base64,' +
+		coordinateBuffer.toString('base64')
 	}
 
 
 }
 
-function getGroundSurface (building, options) {
+function getGroundSurface(building, options) {
 
 	var groundSurface = {},
 		groundPolygon = null
 
-	building
-		['bldg:Building']
-		['bldg:boundedBy']
-		.forEach(function (surfaceType) {
+	if (building['bldg:Building']['bldg:boundedBy']) {
+		building
+			['bldg:Building']
+			['bldg:boundedBy']
+			.forEach(function (surfaceType) {
 
-			groundSurface = surfaceType['bldg:GroundSurface']
+				groundSurface = surfaceType['bldg:GroundSurface']
 
-			if (groundSurface)
-				groundPolygon = getPosList(
-					groundSurface
+				if (groundSurface)
+					groundPolygon = convertGroundSurface(
+						groundSurface,
+						options.zeroPoint
+					)
+			})
+
+		return groundPolygon
+	}
+}
+
+function convertGroundSurface(groundSurface, zeroPoint) {
+	return getPosList(
+		groundSurface
+			['bldg:lod2MultiSurface']
+			['gml:MultiSurface']
+			['gml:surfaceMember'],
+		zeroPoint
+	)
+}
+
+function getSurfaceTypes(building, options) {
+
+
+	if (building['bldg:Building']['bldg:boundedBy'])
+		return building['bldg:Building']['bldg:boundedBy']
+			.map(function (surfaceType) {
+
+				var surfaces,
+					Polygons = getOnlyProperty(surfaceType)
 						['bldg:lod2MultiSurface']
 						['gml:MultiSurface']
-						['gml:surfaceMember'],
-					options.zeroPoint
-				)
-		})
+						['gml:surfaceMember']
 
-	return groundPolygon
+
+				if (Array.isArray(Polygons)) {
+					surfaces = Polygons.map(function (polygon) {
+						return getPosList(polygon, options.zeroPoint)
+					})
+				}
+				else {
+					// Polygons is just one polygon object
+					surfaces = [getPosList(Polygons, options.zeroPoint)]
+				}
+
+				return {
+					surfaceType: Object.keys(surfaceType)[0],
+					surfaces: surfaces.map(function (surface) {
+						return surface
+						//return earcut(surface)
+					})
+				}
+			})
 }
 
-function getSurfaceTypes (building, options) {
-
-	return building['bldg:Building']['bldg:boundedBy']
-		.map(function (surfaceType) {
-
-			var surfaces,
-				Polygons = getOnlyProperty(surfaceType)
-					['bldg:lod2MultiSurface']
-					['gml:MultiSurface']
-					['gml:surfaceMember']
-
-
-			if (Array.isArray(Polygons)) {
-				surfaces = Polygons.map(function (polygon) {
-					return getPosList(polygon, options.zeroPoint)
-				})
-			}
-			else {
-				// Polygons is just one polygon object
-				surfaces = [getPosList(Polygons, options.zeroPoint)]
-			}
-
-			return {
-				surfaceType: Object.keys(surfaceType)[0],
-				surfaces: surfaces.map(function (surface) {
-					return surface
-					//return earcut(surface)
-				})
-			}
-		})
-}
-
-function getAccessors (options) {
+function getAccessors(options) {
 	return {
 		'accessor-01': {
 			bufferView: 'bufferView_01',
@@ -214,7 +230,7 @@ function getAccessors (options) {
 }
 
 
-function getPasses (options) {
+function getPasses(options) {
 
 	// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 	return {
@@ -262,45 +278,69 @@ function getPasses (options) {
 	// jscs:enable
 }
 
-function convert (buildings, options) {
+function convert(cityObjects, options) {
 
-	if (!Array.isArray(buildings))
-		buildings = [buildings]
+	if (!Array.isArray(cityObjects))
+		cityObjects = [cityObjects]
 
-	return buildings
-		.map(function (building, index) {
+	return cityObjects
+		.map(function (cityObject) {
 
-			//if (index > 1)
-			//	return 0
+			console.log(getOnlyProperty(cityObject)['gml:id'])
 
-			//console.log(JSON.stringify(building,null,2))
+			var surfaceTypes,
+				buildingBuffer,
+				gmlId,
+				groundSurfaceVertices,
+				terrainHeight,
+				accessors
 
-			var surfaceTypes = getSurfaceTypes(building, options),
-				buildingBuffer = surfacesToBufferObject(surfaceTypes),
-				gmlId = building['bldg:Building']['gml:id'].slice(1,-1)
+
+			if (cityObject['bldg:Building']) {
+				surfaceTypes = getSurfaceTypes(cityObject, options)
+				buildingBuffer = surfacesToBufferObject(surfaceTypes)
+				gmlId = cityObject['bldg:Building']['gml:id'].slice(1, -1)
+				groundSurfaceVertices = getGroundSurface(
+					cityObject,
+					options
+				)
+
+				if (buildingBuffer)
+					accessors = getAccessors({count: buildingBuffer.byteLength})
+
+				if (cityObject['bldg:Building']['gen:doubleAttribute'])
+					terrainHeight = cityObject['bldg:Building']
+						['gen:doubleAttribute']
+						['gen:value']
+			}
+			else if (cityObject['bldg:GroundSurface']) {
+				groundSurfaceVertices = convertGroundSurface(
+					cityObject['bldg:GroundSurface']
+				)
+			}
+			else
+				return
 
 
 			// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 			return {
 				gmlid: gmlId,
-				terrainHeight: building['bldg:Building']
-					['gen:doubleAttribute']['gen:value'],
-				groundSurfaceVertices: getGroundSurface(
-					building,
-					options
-				),
+				terrainHeight: terrainHeight || 0,
+				groundSurfaceVertices: groundSurfaceVertices,
 				gltf: {
-					accessors: getAccessors({count: buildingBuffer.byteLength}),
+					accessors: accessors || '',
 					asset: {
 						gmlid: gmlId
 					},
 					buffers: {
-						building: buildingBuffer
+						building: buildingBuffer || ''
 					},
 					bufferViews: {
 						bufferView_01: {
 							buffer: 'building',
-							byteLength: buildingBuffer.byteLength,
+							byteLength: buildingBuffer ?
+							            buildingBuffer.byteLength :
+							            null,
 							byteOffset: 0,
 							target: 34962
 						}

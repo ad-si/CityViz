@@ -15,22 +15,25 @@ var viewer = new Cesium.Viewer('cesiumContainer'),
 
 $.get('/buildings', function (buildings) {
 
-	var models = []
-
-	//buildings = buildings.slice(0, 5)
+	console.log('Number of buildings:', buildings.length)
 
 	buildings.forEach(function (building, index) {
 
-		console.log(building)
+		var addedBuilding,
+			coordinates
 
-		var addedBuilding = viewer.entities.add({
+		if (!building.groundSurfaceVertices)
+			return
+
+		coordinates = building.groundSurfaceVertices
+			.map(function (vertex) {
+				return Cesium.Cartesian3.fromDegrees.apply(null, vertex)
+			})
+
+		addedBuilding = viewer.entities.add({
 			name: 'building ' + index,
 			polygon: {
-				hierarchy: building.gltf.asset.groundSurfaceVertices
-					.map(function (vertex) {
-						console.log(vertex)
-						return Cesium.Cartesian3.fromArray(vertex)
-					}),
+				hierarchy: coordinates,
 				material: Cesium.Color.RED.withAlpha(0.5),
 				outline: true,
 				outlineColor: Cesium.Color.BLACK
