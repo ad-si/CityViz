@@ -18,11 +18,12 @@ var fs = require('fs'),
 	packageFile = require('../../package.json'),
 
 	javaPath = process.env.JAVA_HOME ?
-	           process.env.JAVA_HOME + '/bin/java' : 'java',
+	           process.env.JAVA_HOME + '/bin/java' :
+	           'java',
 	programDirectory = '/Applications/3DCityDB-Importer-Exporter',
 	importExportExecutable = path.resolve(
 		__dirname, '../../node_modules/3dcitydb-importer-exporter' +
-		           '/lib/3dcitydb-impexp.jar'
+		'/lib/3dcitydb-impexp.jar'
 	),
 	dbConfig = {
 		port: 5432,
@@ -40,8 +41,8 @@ var fs = require('fs'),
 	)
 
 
-function executeShellCommand (additionalArguments, options, exportFile,
-                              actualExportFile, callback) {
+function executeShellCommand(additionalArguments, options, exportFile,
+                             actualExportFile, callback) {
 
 	var configFile = temp.path(),
 		shellCommand,
@@ -141,26 +142,27 @@ module.exports.exportSync = function (midiBuffer, options) {
 module.exports.setupDatabase = function () {
 
 
-	function alreadyExists (error) {
+	function alreadyExists(error) {
 		return error.message.search(/already exists/gi) !== -1
 	}
 
 	pgQuery.connectionParameters = intitalDbString
 
-	pgQuery('create user cityviz with password "cityviz"')
+	pgQuery("create user cityviz with password 'cityviz'")
 		.then(
 		function () {
 			console.log('User created')
 		},
 		function (error) {
 			if (alreadyExists(error))
-				console.log(error.message)
+				console.error(error.message)
 			else
 				throw error
 		})
 
 		.then(function () {
-			return pgQuery('create database cityviz').then(
+			return pgQuery('create database cityviz')
+				.then(
 				function () {
 					console.log('Database created')
 				},
@@ -175,7 +177,8 @@ module.exports.setupDatabase = function () {
 
 		.then(function () {
 			return pgQuery(
-				'grant all privileges on database cityviz to cityviz').then(
+				'grant all privileges on database cityviz to cityviz')
+				.then(
 				function () {
 					console.log('Privileges granted')
 				},
@@ -188,7 +191,8 @@ module.exports.setupDatabase = function () {
 		})
 
 		.then(function () {
-			return pgQuery('create extension postgis').then(
+			return pgQuery('create extension postgis')
+				.then(
 				function () {
 					console.log('Created postgis extension')
 				},
@@ -201,7 +205,8 @@ module.exports.setupDatabase = function () {
 		})
 
 		.then(function () {
-			return pgQuery('create extension postgis_topology').then(
+			return pgQuery('create extension postgis_topology')
+				.then(
 				function () {
 					console.log('Created postgis_topology extension')
 				},
@@ -285,6 +290,7 @@ module.exports.setupDatabase = function () {
 			//}
 		})
 		.catch(function (error) {
+			console.error('An error occured during database setup!')
 			console.error(error)
 		})
 }
