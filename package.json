@@ -38,7 +38,7 @@
     "pg-query": "^0.11.0",
     "promised-mongo": "~0.11.1",
     "request": "~2.53.0",
-    "rethinkdbdash": "^1.16.10",
+    "rethinkdbdash": "^1.16.13",
     "temp": "^0.8.1",
     "three": "^0.69.0",
     "xml2json": "^0.6.1",
