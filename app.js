@@ -27,6 +27,12 @@ app.get('/buildings/:count', function (request, response) {
 		})
 })
 
+app.get('/buildingsStream', function (request, response) {
+
+	rdbWrapper
+		.getStream()
+		.pipe(response)
+})
 
 app.listen(port, function () {
 	console.log('Server listening at http://localhost:' + port)

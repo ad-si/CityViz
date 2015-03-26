@@ -33,6 +33,14 @@ rdbWrapper.getAll = function () {
 		.run()
 }
 
+rdbWrapper.getStream = function () {
+
+	return rethinkdb
+		.db('cityviz')
+		.table('objects')
+		.toStream()
+		.on('error', console.error)
+}
 
 rdbWrapper.get = function (count) {
 
