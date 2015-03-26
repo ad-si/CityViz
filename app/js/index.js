@@ -95,7 +95,11 @@ function getCityObjects() {
 				})
 
 			addedBuilding = viewer.entities.add({
-				name: 'building ' + index,
+				name: 'CityObject ' + index,
+				description:
+				'GmlID: ' + building.gmlid + '<br>' +
+				'Terrain-height: ' + building.terrainHeight + ' m<br>' +
+				'District: ' + building.fileName + '<br>' ,
 				polygon: {
 					hierarchy: coordinates,
 					material: Cesium.Color.RED.withAlpha(0.5),
