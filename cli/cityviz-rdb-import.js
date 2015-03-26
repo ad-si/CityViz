@@ -23,9 +23,20 @@ function importFile(filePath, callback) {
 			if (error)
 				throw error
 
-			cityObjects = cityObjects.filter(function (item) {
-				return item != null
-			})
+			cityObjects = cityObjects
+				.filter(function (item) {
+					return item != null
+				})
+				.map(function (cityObject) {
+					cityObject.fileName = path.basename(filePath, '.xml')
+						.split('-')
+						.slice(2)
+						.join('-')
+						.replace('_', ' ')
+						.toLowerCase()
+
+					return cityObject
+				})
 
 			process.stdout.write(
 				'\n\nInsert ' +
