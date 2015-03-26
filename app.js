@@ -34,6 +34,22 @@ app.get('/buildingsStream', function (request, response) {
 		.pipe(response)
 })
 
+app.get('/buildingsEventStream', function (request, response) {
+
+	response.set('Content-Type', 'text/event-stream')
+
+	var stream = rdbWrapper.getStream()
+
+	stream.on('data', function (chunk) {
+		response.write('data:' + chunk + '\n\n')
+	})
+
+	stream.on('end', function (chunk) {
+		response.end()
+	})
+})
+
+
 app.listen(port, function () {
 	console.log('Server listening at http://localhost:' + port)
 })
