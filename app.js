@@ -2,10 +2,13 @@
 
 var path = require('path'),
 	express = require('express'),
+	serveFavicon = require('serve-favicon'),
 	rdbWrapper = require('./src/rdbWrapper'),
 	app = express(),
 	port = 3000
 
+
+app.use(serveFavicon(path.join(__dirname, 'app/img/favicon.png')))
 
 app.use('/', express.static(path.resolve(__dirname, 'app')))
 
