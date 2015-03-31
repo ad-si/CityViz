@@ -1,4 +1,5 @@
 var rethinkdb = require('rethinkdbdash')(),
+	JSONStream = require('JSONStream'),
 	rdbWrapper = {}
 
 
@@ -40,6 +41,7 @@ rdbWrapper.getStream = function () {
 		.table('objects')
 		.toStream()
 		.on('error', console.error)
+		.pipe(JSONStream.stringify())
 }
 
 rdbWrapper.get = function (count) {

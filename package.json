@@ -23,6 +23,7 @@
   "license": "All rights reserved",
   "dependencies": {
     "3dcitydb-impexp": "adius/3dcitydb-impexp#177db59",
+    "JSONStream": "^0.10.0",
     "better-path": "^0.2.0",
     "cesiumjs": "1.7.2",
     "clone": "^1.0.0",
