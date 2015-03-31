@@ -1,3 +1,5 @@
+'use strict'
+
 var path = require('path'),
 	express = require('express'),
 	rdbWrapper = require('./src/rdbWrapper'),
@@ -12,60 +14,51 @@ app.use('/modules', express.static(
 )
 
 
-app.get('/cityObjects', function (request, response) {
-	rdbWrapper
-		.get()
-		.then(function (cityObjects) {
-			response.json(cityObjects)
-		})
-})
-app.get('/cityObjects/:count', function (request, response) {
-	rdbWrapper
-		.get({
+function sendCityObjects(request, response) {
+
+	if (request.query.type === 'buffered') {
+
+		rdbWrapper
+			.get({
+				numberOfCityObjects: request.params.count
+			})
+			.then(function (cityObjects) {
+				response.json(cityObjects)
+			})
+	}
+
+	else if (request.query.type === 'event-stream') {
+
+		response.set('Content-Type', 'text/event-stream')
+
+		var stream = rdbWrapper.getStream({
 			numberOfCityObjects: request.params.count
 		})
-		.then(function (cityObjects) {
-			response.json(cityObjects)
+
+		stream.on('data', function (chunk) {
+			response.write('data:' + chunk + '\n\n')
 		})
-})
 
-
-app.get('/cityObjectsStream', function (request, response) {
-
-	response.set('Content-Type', 'application/json')
-
-	rdbWrapper
-		.getStream()
-		.pipe(response)
-})
-app.get('/cityObjectsStream/:count', function (request, response) {
-
-	response.set('Content-Type', 'application/json')
-
-	rdbWrapper
-		.getStream({
-			numberOfCityObjects: request.params.count
+		stream.on('end', function (chunk) {
+			response.end()
 		})
-		.pipe(response)
-})
+	}
+
+	else {
+
+		response.set('Content-Type', 'application/json')
+
+		rdbWrapper
+			.getStream({
+				numberOfCityObjects: request.params.count
+			})
+			.pipe(response)
+	}
+}
 
 
-app.get('/cityObjectsEventStream/:count', function (request, response) {
-
-	response.set('Content-Type', 'text/event-stream')
-
-	var stream = rdbWrapper.getStream({
-		numberOfCityObjects: request.params.count
-	})
-
-	stream.on('data', function (chunk) {
-		response.write('data:' + chunk + '\n\n')
-	})
-
-	stream.on('end', function (chunk) {
-		response.end()
-	})
-})
+app.get('/cityObjects', sendCityObjects)
+app.get('/cityObjects/:count', sendCityObjects)
 
 
 app.listen(port, function () {
