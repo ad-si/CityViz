@@ -26,31 +26,33 @@ rdbWrapper.insert = function (data) {
 		.run()
 }
 
-rdbWrapper.getAll = function () {
+rdbWrapper.getStream = function (options) {
 
-	return rethinkdb
+	var requestChain = rethinkdb
 		.db('cityviz')
 		.table('cityObjects')
-		.run()
-}
 
-rdbWrapper.getStream = function () {
+	if (options.numberOfCityObjects)
+		requestChain = requestChain
+			.slice(0, Number(options.numberOfCityObjects))
 
-	return rethinkdb
-		.db('cityviz')
-		.table('cityObjects')
+	return requestChain
 		.toStream()
-		.on('error', console.error)
 		.pipe(JSONStream.stringify())
 }
 
-rdbWrapper.get = function (count) {
+rdbWrapper.get = function (options) {
 
-	return rethinkdb
+	var requestChain = rethinkdb
 		.db('cityviz')
 		.table('cityObjects')
-		.slice(0, Number(count))
-		.run()
+
+
+	if (options.numberOfCityObjects)
+		requestChain = requestChain
+			.slice(0, Number(options.numberOfCityObjects))
+
+	return requestChain.run()
 }
 
 
