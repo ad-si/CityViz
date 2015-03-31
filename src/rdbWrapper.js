@@ -6,7 +6,7 @@ var rethinkdb = require('rethinkdbdash')(),
 rdbWrapper.createTable = function () {
 	return rethinkdb
 		.db('cityviz')
-		.tableCreate('buildings')
+		.tableCreate('cityObjects')
 		.run()
 		.catch(function (error) {
 			console.error(error.message)
@@ -21,7 +21,7 @@ rdbWrapper.insert = function (data) {
 
 	return rethinkdb
 		.db('cityviz')
-		.table('buildings')
+		.table('cityObjects')
 		.insert(data)
 		.run()
 }
@@ -30,7 +30,7 @@ rdbWrapper.getAll = function () {
 
 	return rethinkdb
 		.db('cityviz')
-		.table('buildings')
+		.table('cityObjects')
 		.run()
 }
 
@@ -38,7 +38,7 @@ rdbWrapper.getStream = function () {
 
 	return rethinkdb
 		.db('cityviz')
-		.table('objects')
+		.table('cityObjects')
 		.toStream()
 		.on('error', console.error)
 		.pipe(JSONStream.stringify())
@@ -48,7 +48,7 @@ rdbWrapper.get = function (count) {
 
 	return rethinkdb
 		.db('cityviz')
-		.table('buildings')
+		.table('cityObjects')
 		.slice(0, Number(count))
 		.run()
 }

@@ -11,30 +11,30 @@ app.use('/modules', express.static(
 		path.resolve(__dirname, 'node_modules'))
 )
 
-app.get('/buildings', function (request, response) {
+app.get('/cityObjects', function (request, response) {
 	rdbWrapper
 		.getAll()
-		.then(function (buildings) {
-			response.json(buildings)
+		.then(function (cityObjects) {
+			response.json(cityObjects)
 		})
 })
 
-app.get('/buildings/:count', function (request, response) {
+app.get('/cityObjects/:count', function (request, response) {
 	rdbWrapper
 		.get(request.params.count)
-		.then(function (buildings) {
-			response.json(buildings)
+		.then(function (cityObjects) {
+			response.json(cityObjects)
 		})
 })
 
-app.get('/buildingsStream', function (request, response) {
+app.get('/cityObjectsStream', function (request, response) {
 
 	rdbWrapper
 		.getStream()
 		.pipe(response)
 })
 
-app.get('/buildingsEventStream', function (request, response) {
+app.get('/cityObjectsEventStream', function (request, response) {
 
 	response.set('Content-Type', 'text/event-stream')
 
