@@ -4,26 +4,93 @@
 
 1. Clone repository from
 	[github.com/adius/CityViz](https://github.com/adius/CityViz) like this:
-	`$ git clone https://github.com/adius/CityViz`
+	```sh
+	git clone https://github.com/adius/CityViz
+	```
 1. Run `$ npm install` to install all dependencies
-1. Start postgres server
 1. In order to make the `cityviz` command available on your machine
    run following command in the CityViz root directory:
 
    ```sh
    npm link
    ```
-1. Run `$ cityviz setup` to create the CityViz database
+   
+   In order to get an overview over available sub-commands you can 
+   simply run `cityviz` without any parameters.
+
+
+### 3DCityDb 2.1 based version
+
+1. Start postgres server
+1. Run `cityviz setup` to create the CityViz database.
+	The newly created database has following properties:
+	- name: cityviz
+	- user: cityviz
+	- password:  cityviz
+	If you want to have different database-settings, make sure to update
+	those in [config.yaml](./config.yaml).
 1. If you encounter any problems during setup,
-	drop the CityViz database first with `$ cityviz dropdb` and try again.
-1. Run `$ cityviz import <citygml-file|directory>` to import specified files
-1. Run `$ cityviz serve` to start server
-1. Open [localhost:3000](http://localhost:3000)
+	drop the CityViz database first with `cityviz dropdb` and try again.
+1. Run `cityviz import <citygml-file|directory>` to import specified files
+	Attention: Although the script reports that the import was successful it
+	might not contain any data.
+	[Investigation on this issue](https://github.com/3dcitydb/3dcitydb/issues/3)
+	Alternatively you can import data with the graphical version of the
+	[3DCityDb-importer-exporter 1.6](http://www.3dcitydb.org/3dcitydb/d3dimpexp)
+	
+Please checkout [test/export.js](./test/export.js)
+for the export to collada and the conversion to gltf
+
+
+### RethinkDB based version
+
+1. Install RethinkDB
+	On Mac with hombrew: `brew update && brew install rethinkdb`
+1. Start RethinkDB by executing `rethinkdb` in your command line
+1. Use the admin interface on [localhost:8080](http://localhost:8080)
+	to manage the database.
+1. Import citygml files into your database by running:
+   
+   ```sh
+   cityviz rdb-import <gml file | directory of gml files>
+   ```
+1. Run `node app.js` to start the application server
+
+The server now exposes several endpoints:
+	
+[localhost:3000/cityObjects](http://localhost:3000/cityObjects)
+
+Get all cityObjects from the database as JSON-array.
+To limit the number of cityObjects use the endpoint like this:
+[localhost:3000/cityObjects/1000](http://localhost:3000/cityObjects/1000)
+
+The query parameter "type" can be used to get the data [buffered]
+(http://localhost:3000/cityObjects?type=buffered) or as 
+[event-stream](http://localhost:3000/cityObjects?type=event-stream)
+(default is streamed)
+
+
+Open [localhost:3000](http://localhost:3000) in your Browser to get a 
+interactive webgl globe including renderings of the ground-surfaces of
+all buildings in your database.
+(Attention: This might crash when you have too many (~ >50000)
+cityObjects in your database)
+
+The query parameter "numberOfCityObjects" can be used to limit the number of
+cityObjects to be rendered: 
+[localhost:3000?numberOfCityObjects=500](http://localhost:3000?numberOfCityObjects=500)
+
+This uses the streaming version of the cityObjects endpoint in a buffered way.
+Clients for the streaming api and for the event-stream api
+which leverage streaming are work in progress
+in the [app/js/index.js](./app/js/index.js) file.
 
 
 ## Detailed Installation
 
-This should be used if any errors occur during the getting started process.
+This should be used if you want to use the official GUIs and execute the 
+3DCityDb setup process manually instead of using the 
+bundled version (not recommended).
 
 On Mac:
 
@@ -33,7 +100,7 @@ On Mac:
 1. Follow the instructions on [postgresapp.com/documentation
 	](http://postgresapp.com/documentation/cli-tools.html) to add the `psql`
 	command to your command line.
-1. Download [3DCityDB](http://www.3dcitydb.org/3dcitydb/downloads)
+1. Download [3DCityDB 2.1](http://www.3dcitydb.org/3dcitydb/downloads)
 1. Run setup.jar to install 3DCityDB
 1.
 	- Create a new database in postgres
@@ -47,38 +114,9 @@ On Mac:
 	Then create the necessary schemas and tables by executing this shell-script.
 	(For the Rotterdam model use SRID: 28992 and name EPSG: 28992)
 1. Open the 3D City Database Importer/Exporter by executing
-	`$ /Applications/3DCityDB-Importer-Exporter/3DCityDB-Importer-Exporter.sh`
+	`/Applications/3DCityDB-Importer-Exporter/3DCityDB-Importer-Exporter.sh`
 	and connect to the database
 1. Import your files with the Importer/Exporter.
-
-
-### Rethinkdb
-
-```sh
-brew update && brew install rethinkdb
-```
-
-Start RethinkDB simply by executing `rethinkdb` in your command line.
-
-Then open the admin interface on [localhost:8080](http://localhost:8080)
-and create a database called `cityviz`.
-
-
-## Usage
-
-First you need to set the database settings in `config.yaml`
-according to your environment.
-In order to get an overview over available commands run the cli script:
-`$ node ./bin/cli.js --help`
-
-
-### Import Data
-
-In order to import citygml files into your database run:
-
-```sh
-cityviz import <path/to/file.gml>
-```
 
 
 ## Links
