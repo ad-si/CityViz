@@ -1,0 +1,10 @@
+[
+  { "gltfid": "54ee20fc0aeba2353a80330d", "levels": 6, "roof": "gray", "height": "17m", "coordinates": [4.4446946, 51.9125311] },
+  { "gltfid": "54ee20ce0aeba2353a803303", "levels": 6, "roof": "brown", "height": "15m", "coordinates": [4.4446946, 51.9115311] },
+  { "gltfid": "54ee20ee0aeba2353a80330a", "levels": 3, "roof": "brown", "height": "11m", "coordinates": [4.4442946, 51.9112311] },
+  { "gltfid": "54ee21080aeba2353a80330f", "levels": 4, "roof": "red", "height": "14m", "coordinates": [4.4416946, 51.9109311] },
+  { "gltfid": "54ee20db0aeba2353a803306", "levels": 5, "roof": "gray", "height": "15m", "coordinates": [4.4461946, 51.9104311] },
+  { "gltfid": "54ee20e90aeba2353a803309", "levels": 4, "roof": "gray", "height": "13m", "coordinates": [4.4466946, 51.9101311] },
+  { "gltfid": "54ee20f60aeba2353a80330c", "levels": 14, "height": "57m", "roof": "gray", "coordinates": [4.4496946, 51.9115311] },
+  { "gltfid": "54ee20f20aeba2353a80330b", "levels": 2, "height": "10m", "roof": "brown", "coordinates": [4.4492946, 51.9112311]}
+]
