@@ -1,6 +1,6 @@
 {
   "name": "cityviz",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Interactive real time WebGL powered 3d rendering of Rotterdam",
   "main": "server.js",
   "bin": {
