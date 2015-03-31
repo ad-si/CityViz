@@ -32,11 +32,15 @@ app.get('/cityObjects/:count', function (request, response) {
 
 app.get('/cityObjectsStream', function (request, response) {
 
+	response.set('Content-Type', 'application/json')
+
 	rdbWrapper
 		.getStream()
 		.pipe(response)
 })
 app.get('/cityObjectsStream/:count', function (request, response) {
+
+	response.set('Content-Type', 'application/json')
 
 	rdbWrapper
 		.getStream({
