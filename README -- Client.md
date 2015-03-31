@@ -12,3 +12,10 @@
 - open browser with 'localhost:8080/public/index.html'
 
 
+## Dazugehörige DAteien und Pfade
+
+/public
+server.js
+building.json
+additionalData.json
+
