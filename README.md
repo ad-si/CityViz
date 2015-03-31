@@ -1,5 +1,8 @@
 # CityViz
 
+![Sreenshot of CityViz web-app](./app/img/screenshot.png)
+
+
 ## Getting Started
 
 1. Clone repository from
