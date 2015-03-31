@@ -1,7 +1,22 @@
 var rethinkdb = require('rethinkdbdash')(),
 	JSONStream = require('JSONStream'),
-	rdbWrapper = {}
+	rdbWrapper = {},
+	util = require('util')
 
+
+rdbWrapper.createDatabase = function () {
+	return rethinkdb
+		.dbCreate('cityviz')
+		.run()
+		.catch(function (error) {
+			if (error.message.search('already exists') === -1)
+				throw error
+		})
+		.then(function (response) {
+			if (response)
+				console.log('Created cityviz database')
+		})
+}
 
 rdbWrapper.createTable = function () {
 	return rethinkdb
@@ -9,10 +24,12 @@ rdbWrapper.createTable = function () {
 		.tableCreate('cityObjects')
 		.run()
 		.catch(function (error) {
-			console.error(error.message)
+			if (error.message.search('already exists') === -1)
+				throw error
 		})
 		.then(function (response) {
-			console.log(response)
+			if (response)
+				console.log('Created cityviz table')
 		})
 }
 

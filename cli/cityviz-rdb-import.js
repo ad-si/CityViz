@@ -96,7 +96,10 @@ console.time('Database import duration')
 fs.readdir(importPath, function (directoryError, filePaths) {
 
 	rdbWrapper
-		.createTable()
+		.createDatabase()
+		.then(function () {
+			return rdbWrapper.createTable()
+		})
 		.then(function () {
 
 			if (directoryError)
