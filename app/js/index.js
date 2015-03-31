@@ -13,20 +13,17 @@ var viewer = new Cesium.Viewer('cesiumContainer'),
 			previous[keyValue[0]] = keyValue[1]
 			return previous
 		}, {}),
-	queryString = '/cityObjectsStream/1000',
+	queryString = '/cityObjects',
 	firstCall = true
 
 
 if (urlParameters.numberOfCityObjects)
-	queryString = '/cityObjectsStream/' + urlParameters.numberOfCityObjects
-
-if (urlParameters.allObjects)
-	queryString = '/cityObjectsStream'
+	queryString = '/cityObjects/' + urlParameters.numberOfCityObjects
 
 
 function getServerEvents() {
 
-	var jsonStream = new EventSource('/cityObjectsEventStream')
+	var jsonStream = new EventSource('/cityObjects?type=event-stream')
 
 	jsonStream.addEventListener('message', function (event) {
 
@@ -70,7 +67,7 @@ function getServerEvents() {
 function getCityObjectsStreamed() {
 	var xhr = new XMLHttpRequest()
 
-	xhr.open('GET', '/cityObjectsStream', true)
+	xhr.open('GET', '/cityObjects', true)
 	xhr.addEventListener('progress', function () {
 		console.log('PROGRESS: ' + xhr.responseText.length)
 	})
@@ -79,8 +76,6 @@ function getCityObjectsStreamed() {
 
 function getCityObjects() {
 	$.get(queryString, function (cityObjects) {
-
-		console.log(cityObjects)
 
 		cityObjects.forEach(function (building, index) {
 
