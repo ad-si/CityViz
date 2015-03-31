@@ -19,12 +19,16 @@ app.use('/modules', express.static(
 
 function sendCityObjects(request, response) {
 
+	var options = {
+		numberOfCityObjects: request.params.count,
+		district: request.query.district
+	}
+
+
 	if (request.query.type === 'buffered') {
 
 		rdbWrapper
-			.get({
-				numberOfCityObjects: request.params.count
-			})
+			.get(options)
 			.then(function (cityObjects) {
 				response.json(cityObjects)
 			})
@@ -32,11 +36,11 @@ function sendCityObjects(request, response) {
 
 	else if (request.query.type === 'event-stream') {
 
+		var stream
+
 		response.set('Content-Type', 'text/event-stream')
 
-		var stream = rdbWrapper.getStream({
-			numberOfCityObjects: request.params.count
-		})
+		stream = rdbWrapper.getStream(options)
 
 		stream.on('data', function (chunk) {
 			response.write('data:' + chunk + '\n\n')
@@ -52,9 +56,7 @@ function sendCityObjects(request, response) {
 		response.set('Content-Type', 'application/json')
 
 		rdbWrapper
-			.getStream({
-				numberOfCityObjects: request.params.count
-			})
+			.getStream(options)
 			.pipe(response)
 	}
 }

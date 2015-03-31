@@ -49,9 +49,19 @@ rdbWrapper.getStream = function (options) {
 		.db('cityviz')
 		.table('cityObjects')
 
+	// The names of rottderdam citygml files
+	// match the districts of the cityObjects
+	// TODO: Generalize
+	if (options.district)
+		requestChain = requestChain
+			.filter(rethinkdb
+				.row("fileName")
+				.eq(options.district))
+
 	if (options.numberOfCityObjects)
 		requestChain = requestChain
 			.slice(0, Number(options.numberOfCityObjects))
+
 
 	return requestChain
 		.toStream()

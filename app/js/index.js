@@ -20,6 +20,9 @@ var viewer = new Cesium.Viewer('cesiumContainer'),
 if (urlParameters.numberOfCityObjects)
 	queryString = '/cityObjects/' + urlParameters.numberOfCityObjects
 
+if (urlParameters.district)
+	queryString += '?district=' + urlParameters.district
+
 
 function getServerEvents() {
 
@@ -75,7 +78,11 @@ function getCityObjectsStreamed() {
 }
 
 function getCityObjects() {
+
 	$.get(queryString, function (cityObjects) {
+
+		if (cityObjects.length === 0)
+			alert('No cityObjects satisfy your request!')
 
 		cityObjects.forEach(function (building, index) {
 

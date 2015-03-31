@@ -67,10 +67,15 @@ Get all cityObjects from the database as JSON-array.
 To limit the number of cityObjects use the endpoint like this:
 [localhost:3000/cityObjects/1000](http://localhost:3000/cityObjects/1000)
 
-The query parameter "type" can be used to get the data [buffered]
+The query parameter `type` can be used to get the data [buffered]
 (http://localhost:3000/cityObjects?type=buffered) or as 
 [event-stream](http://localhost:3000/cityObjects?type=event-stream)
 (default is streamed)
+
+The query parameter `district` can be used to get only cityObjects
+from a certain district:
+[localhost:3000/cityObjects?district=witte%20dorp](http://localhost:3000/cityObjects?district=witte%20dorp)
+
 
 
 Open [localhost:3000](http://localhost:3000) in your Browser to get a 
@@ -79,7 +84,7 @@ all buildings in your database.
 (Attention: This might crash when you have too many (~ >50000)
 cityObjects in your database)
 
-The query parameter "numberOfCityObjects" can be used to limit the number of
+The query parameter `numberOfCityObjects` can be used to limit the number of
 cityObjects to be rendered: 
 [localhost:3000?numberOfCityObjects=500](http://localhost:3000?numberOfCityObjects=500)
 
@@ -87,6 +92,10 @@ This uses the streaming version of the cityObjects endpoint in a buffered way.
 Clients for the streaming api and for the event-stream api
 which leverage streaming are work in progress
 in the [app/js/index.js](./app/js/index.js) file.
+
+The query parameter `district` is the same as in the backend.
+[localhost:3000?district=witte%20dorp](http://localhost:3000?district=witte%20dorp)
+
 
 
 ## Detailed Installation
