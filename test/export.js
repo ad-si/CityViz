@@ -13,7 +13,7 @@ var fse = require('fs-extra'),
 	fileName = 'building',
 	options = {
 		format: 'kml',
-		id: 'UUID_b960fd73-ae5b-4259-b6cf-768abd303c7d',
+		id: 'UUID_675bf0e1-eb30-4611-94ce-7b7c9d6885e2',
 		outputFile: path.join(__dirname, 'build', fileName + '.kml'),
 		//outputFiles: [
 		//	path.resolve(__dirname, '../build', fileName + '1.kml'),
