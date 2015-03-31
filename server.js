@@ -42,6 +42,21 @@ var MongoClient = require('mongodb').MongoClient,
 	app,
 	projectServiceUrlParts
 
+/***
+ * featureInfo is stored locally because its not available yet in the converted data
+ * @type {*[]}
+ */
+
+var featureInfo = [
+	{ "gltfid": "54ee20fc0aeba2353a80330d", "levels": 6, "roof": "gray", "height": "17m", "coordinates": [4.4446946, 51.9125311] },
+	{ "gltfid": "54ee20ce0aeba2353a803303", "levels": 6, "roof": "brown", "height": "15m", "coordinates": [4.4446946, 51.9115311] },
+	{ "gltfid": "54ee20ee0aeba2353a80330a", "levels": 3, "roof": "brown", "height": "11m", "coordinates": [4.4442946, 51.9112311] },
+	{ "gltfid": "54ee21080aeba2353a80330f", "levels": 4, "roof": "red", "height": "14m", "coordinates": [4.4416946, 51.9109311] },
+	{ "gltfid": "54ee20db0aeba2353a803306", "levels": 5, "roof": "gray", "height": "15m", "coordinates": [4.4461946, 51.9104311] },
+	{ "gltfid": "54ee20e90aeba2353a803309", "levels": 4, "roof": "gray", "height": "13m", "coordinates": [4.4466946, 51.9101311] },
+	{ "gltfid": "54ee20f60aeba2353a80330c", "levels": 14, "height": "57m", "roof": "gray", "coordinates": [4.4496946, 51.9115311] },
+	{ "gltfid": "54ee20f20aeba2353a80330b", "levels": 2, "height": "10m", "roof": "brown", "coordinates": [4.4492946, 51.9112311]}
+]
 
 if (argv.help)
 	return yargs.showHelp()
@@ -153,20 +168,57 @@ app.get('/proxy/*', function (req, res, next) {
 	)
 })
 
+/***
+ * the getFeatureInfo route returns additional information for a building
+ * @params: id - buildingID
+ */
 
-app.get('/db/info', function (req, res, next) {
-	console.log(req.query.id)
-	res.status(200).send({buildingName: 'Rathaus', height: '45m'})
+app.get('/db/getFeatureInfo', function (req, res, next) {
+	var info = {}
+	for(var i=0; i<featureInfo.length; i++){
+		if(featureInfo[i]["gltfid"] == req.query.id){
+			info = featureInfo[i]
+			break;
+		}
+	}
+	//{buildingName: 'Rathaus', height: '45m'}
+	res.status(200).send(info)
+
+	/***
+	 * the database is currently not connected because the feature info
+	 * for buildings is not available due to issues with the conversion pipeline
+	 */
+	/*
+	MongoClient.connect(
+		'mongodb://localhost:27017/cityViz',
+		function (err, db) {
+			if (!err) {
+				console.log('We are connected')
+				var collection = db.collection('featureInfo')
+				if (collection != null)
+					collection.find({"gtlfid": req.query.id}).toArray(function (err, items) {
+						res.status(200).send({err: err, result: items})
+					})
+				else
+					res
+						.status(404)
+						.send({result: 'Could not retrieve data from db...'})
+			}
+		})*/
 })
 
-app.get('/db/buildings', function (req, res, next) {
+/***
+ * the getScene route queries all scene information from the datavase and retunr it
+ * @params: none
+ */
+app.get('/db/getScene', function (req, res, next) {
 	// Connect to the db
 	MongoClient.connect(
 		'mongodb://localhost:27017/cityViz',
 		function (err, db) {
 			if (!err) {
 				console.log('We are connected')
-				var collection = db.collection('buildings')//Nordkethel')
+				var collection = db.collection('buildings')
 				if (collection != null)
 					collection.find({}).toArray(function (err, items) {
 						res.status(200).send({err: err, result: items})
@@ -179,12 +231,15 @@ app.get('/db/buildings', function (req, res, next) {
 		})
 })
 
+/***
+ * this route can be used to project coordinates via http://sampleserver1.arcgisonline.com
+ * it is not used currently
+ * @params: values - 2-dimensional array of float values
+ */
+
 app.get('/project/*', function (req, res, next) {
 	var proxy,
-		serviceUrl = createServiceUrl([
-			[86693.42, 441900.78],
-			[86694.52, 441896.]
-		])
+		serviceUrl = createServiceUrl(req.query.values)
 
 	console.log(serviceUrl)
 
