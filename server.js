@@ -42,6 +42,11 @@ var MongoClient = require('mongodb').MongoClient,
 	app,
 	projectServiceUrlParts
 
+/***
+ * featureInfo is stored locally because its not available yet in the converted data
+ * @type {*[]}
+ */
+
 var featureInfo = [
 	{ "gltfid": "54ee20fc0aeba2353a80330d", "levels": 6, "roof": "gray", "height": "17m", "coordinates": [4.4446946, 51.9125311] },
 	{ "gltfid": "54ee20ce0aeba2353a803303", "levels": 6, "roof": "brown", "height": "15m", "coordinates": [4.4446946, 51.9115311] },
@@ -163,9 +168,12 @@ app.get('/proxy/*', function (req, res, next) {
 	)
 })
 
+/***
+ * the getFeatureInfo route returns additional information for a building
+ * @params: id - buildingID
+ */
 
 app.get('/db/getFeatureInfo', function (req, res, next) {
-	console.log(req.query.id)
 	var info = {}
 	for(var i=0; i<featureInfo.length; i++){
 		if(featureInfo[i]["gltfid"] == req.query.id){
@@ -176,12 +184,17 @@ app.get('/db/getFeatureInfo', function (req, res, next) {
 	//{buildingName: 'Rathaus', height: '45m'}
 	res.status(200).send(info)
 
-	/*MongoClient.connect(
+	/***
+	 * the database is currently not connected because the feature info
+	 * for buildings is not available due to issues with the conversion pipeline
+	 */
+	/*
+	MongoClient.connect(
 		'mongodb://localhost:27017/cityViz',
 		function (err, db) {
 			if (!err) {
 				console.log('We are connected')
-				var collection = db.collection('featureInfo')//Nordkethel')
+				var collection = db.collection('featureInfo')
 				if (collection != null)
 					collection.find({"gtlfid": req.query.id}).toArray(function (err, items) {
 						res.status(200).send({err: err, result: items})
@@ -194,6 +207,10 @@ app.get('/db/getFeatureInfo', function (req, res, next) {
 		})*/
 })
 
+/***
+ * the getScene route queries all scene information from the datavase and retunr it
+ * @params: none
+ */
 app.get('/db/getScene', function (req, res, next) {
 	// Connect to the db
 	MongoClient.connect(
@@ -201,7 +218,7 @@ app.get('/db/getScene', function (req, res, next) {
 		function (err, db) {
 			if (!err) {
 				console.log('We are connected')
-				var collection = db.collection('buildings')//Nordkethel')
+				var collection = db.collection('buildings')
 				if (collection != null)
 					collection.find({}).toArray(function (err, items) {
 						res.status(200).send({err: err, result: items})
@@ -214,12 +231,15 @@ app.get('/db/getScene', function (req, res, next) {
 		})
 })
 
+/***
+ * this route can be used to project coordinates via http://sampleserver1.arcgisonline.com
+ * it is not used currently
+ * @params: values - 2-dimensional array of float values
+ */
+
 app.get('/project/*', function (req, res, next) {
 	var proxy,
-		serviceUrl = createServiceUrl([
-			[86693.42, 441900.78],
-			[86694.52, 441896.]
-		])
+		serviceUrl = createServiceUrl(req.query.values)
 
 	console.log(serviceUrl)
 

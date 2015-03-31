@@ -1,5 +1,5 @@
 /**
- * Created by Stephan on 25.02.2015.
+ * Created by Stephan on 25.01.2015.
  */
 
 var viewer = new Cesium.Viewer('cesiumContainer'),
@@ -12,6 +12,12 @@ var height = 0.0,
     heading = 0.0,
     pitch = Cesium.Math.toRadians(180.0),
     roll = Cesium.Math.toRadians(0.0),
+
+	/***
+	 * du to issues with the conversion pipeline, the coordinates are currently not saved
+	 * in the database and are therefore save locally
+	 * @type {*[]}
+	 */
     coordinates = [
 		[4.440463, 51.5533],
 		[4.440462, 51.5534],
@@ -37,51 +43,53 @@ var height = 0.0,
 
 	origin = Cesium.Cartesian3.fromDegrees(4.3004619, 51.5503706, height),
 	rotateMatrix = Cesium.Matrix3.fromRotationX(Cesium.Math.toRadians(180.0))
-//Cesium.Transforms.headingPitchRollToFixedFrame(origin, heading, pitch, roll)
 
-//scene.camera = new Cesium.Camera(scene)
-scene.camera.position = new Cesium.Cartesian3(3931516.3408164782, 305660.7236967403, 4996835.862537176)
-//new Cesium.Cartographic(rotterdamLat, rotterdamLong, 1000)
-scene.camera.direction = new Cesium.Cartesian3(-0.9717706284258928, -0.08710696716161866, -0.21925834533865954)
-scene.camera.up = new Cesium.Cartesian3(-0.2162874162949232, 0.04231087627717153, 0.9754124990483365)
+function setCamera() {
+	scene.camera.position = new Cesium.Cartesian3(3931516.3408164782, 305660.7236967403, 4996835.862537176)
+	scene.camera.direction = new Cesium.Cartesian3(-0.9717706284258928, -0.08710696716161866, -0.21925834533865954)
+	scene.camera.up = new Cesium.Cartesian3(-0.2162874162949232, 0.04231087627717153, 0.9754124990483365)
+}
+setCamera()
 
 var labels
 
+/***
+ * this function requests the scene data from the database and renders the models
+ */
 $.get("/db/getScene", function(data) {
 	var models,
 		modelMatrix,
 		i
 
-	console.log(data)
 	models = []
 
-	//for (k = 0; k < 2; k++){
-		for (i = 0; i < data.result.length; i++) {
-			if (i != 1 && i < coordinates.length) {
-				modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
-					Cesium.Cartesian3.fromDegrees(
-						coordinates[i][0],
-						coordinates[i][1],
-						height
-					)
+	for (i = 0; i < data.result.length; i++) {
+		if (i != 1 && i < coordinates.length) {
+			modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+				Cesium.Cartesian3.fromDegrees(
+					coordinates[i][0],
+					coordinates[i][1],
+					height
 				)
-				//Cesium.Transforms.eastNorthUpToFixedFrame(origin),
+			)
+			//Cesium.Transforms.eastNorthUpToFixedFrame(origin),
 
-				Cesium.Matrix4.multiplyByMatrix3(
-					modelMatrix,
-					rotateMatrix,
-					modelMatrix
-				)
+			Cesium.Matrix4.multiplyByMatrix3(
+				modelMatrix,
+				rotateMatrix,
+				modelMatrix
+			)
 
-				models.push(scene.primitives.add(new Cesium.Model({
-					gltf: data.result[i],//.gltf,
-					modelMatrix: modelMatrix
-					//scale: 2000
-					//minimumPixelSize: 64
-				})))
-			}
+			models.push(scene.primitives.add(new Cesium.Model({
+				gltf: data.result[i],//.gltf,
+				modelMatrix: modelMatrix
+				//scale: 2000
+				//minimumPixelSize: 64
+			})))
 		}
-	//}
+	}
+
+
 
 	models[0].readyPromise.then(function (model) {
 		// Play and loop all animations at half-speed
@@ -121,22 +129,38 @@ $.get("/db/getScene", function(data) {
 
 })
 
-$("html").keydown(function(event){
-    var c2 = new Cesium.Cartesian2(0, 0)
-    var leftTop = scene.camera.pickEllipsoid(c2)
+/***
+ * this function can be used to calculate the coordinates for tile loading
+ * @param
+ * @returns the coordinates or null in case of an error
+ */
+
+function calculateCoordinatesForTiles(){
+    var coordinates = {},
+		c2 = new Cesium.Cartesian2(0, 0)
+    	leftTop = scene.camera.pickEllipsoid(c2)
     c2 = new Cesium.Cartesian2(canvas.width, canvas.height)
     var rightDown = scene.camera.pickEllipsoid(c2)
 
-    if (leftTop != null && rightDown != null) { //ignore jslint
-        leftTop = Cesium.Ellipsoid.WGS84.cartesianToCartographic(leftTop)
-        rightDown = Cesium.Ellipsoid.WGS84.cartesianToCartographic(rightDown)
-        console.log("min lat/long - ", leftTop.latitude, leftTop.longitude)
-        console.log("max lat/long - ", rightDown.latitude, rightDown.longitude)
+    if (leftTop != null && rightDown != null) {
+        coordinates.leftTop = Cesium.Ellipsoid.WGS84.cartesianToCartographic(leftTop)
+        coordinates.rightDown = Cesium.Ellipsoid.WGS84.cartesianToCartographic(rightDown)
+        console.log("min lat/long - ", coordinates.leftTop.latitude, coordinates.leftTop.longitude)
+        console.log("max lat/long - ", coordinates.rightDown.latitude, coordinates.rightDown.longitude)
+
+		return coordinates
     } else {
         //The sky is visible in 3D
         return null
     }
-})
+}
+
+/***
+ * this handler handle hover events on buildings
+ * it loads the additional information from the server
+ * and displays it as a popup next to the building
+ * @type {Cesium.ScreenSpaceEventHandler}
+ */
 
 var handler = new Cesium.ScreenSpaceEventHandler(canvas),
     lastModelId
@@ -161,23 +185,6 @@ handler.setInputAction(
 				})
 
 				scene.primitives.add(labels)
-
-				/* Try infobox
-				 viewer.extend(Cesium.viwerEntityMixin)
-
-				var entity = new Cesium.Entity('Infobox')
-				entity.description = {
-					getValue : function() {
-						return '<p>Name: '+data.buildingName+'</p><p>Height: '+data.height+'</p>'
-					}
-				}
-				viewer.selectedEntity = entity*/
-
-				/*
-				var text = "Name: " + data.buildingName + " Height: " + data.height
-				var creditDisplay = new Cesium.CreditDisplay(document.getElementById('creditContainer'))
-				creditDisplay.addCredit(new Cesium.Credit(text))
-				*/
             })
         }
     },
