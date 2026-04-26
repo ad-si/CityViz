@@ -6,9 +6,9 @@
 ## Getting Started
 
 1. Clone repository from
-	[github.com/adius/CityViz](https://github.com/adius/CityViz) like this:
+	[github.com/ad-si/CityViz](https://github.com/ad-si/CityViz) like this:
 	```sh
-	git clone https://github.com/adius/CityViz
+	git clone https://github.com/ad-si/CityViz
 	```
 1. Run `$ npm install` to install all dependencies
 1. In order to make the `cityviz` command available on your machine
