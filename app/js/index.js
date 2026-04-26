@@ -1,6 +1,12 @@
 'use strict'
 
-var viewer = new Cesium.Viewer('cesiumContainer'),
+var viewer = new Cesium.Viewer('cesiumContainer', {
+		imageryProvider: new Cesium.OpenStreetMapImageryProvider({
+			url: 'https://a.tile.openstreetmap.org/'
+		}),
+		baseLayerPicker: false,
+		geocoder: false
+	}),
 	scene = viewer.scene,
 	height = 0,
 	urlParameters = window
