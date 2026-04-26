@@ -16,7 +16,7 @@ program
 	.command('import', '<CityGML-file>|<directory with CityGML-files>')
 	.command('setup', 'Setup the database')
 	.command('dropdb', 'Drop the content of the database')
-	.command('rdb-import', 'Import file(s) into RethinkDB')
+	.command('db-import', 'Import file(s) into the SQLite JSON store')
 	.parse(process.argv)
 
 

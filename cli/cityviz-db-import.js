@@ -12,7 +12,7 @@ var fs = require('fs'),
 	cityNode = require('../modules/cityNode'),
 	citygml2gltf = require('../modules/citygml2gltf'),
 	importPath,
-	rdbWrapper = require('../src/rdbWrapper.js')
+	dbWrapper = require('../src/dbWrapper.js')
 
 
 function importFile(filePath, callback) {
@@ -44,7 +44,7 @@ function importFile(filePath, callback) {
 				' cityObjects into database'
 			)
 
-			return rdbWrapper
+			return dbWrapper
 				.insert(cityObjects)
 				.then(function () {
 					console.log(' ✔')
@@ -95,28 +95,20 @@ console.time('Database import duration')
 
 fs.readdir(importPath, function (directoryError, filePaths) {
 
-	rdbWrapper
-		.createDatabase()
-		.then(function () {
-			return rdbWrapper.createTable()
-		})
-		.then(function () {
+	if (directoryError)
+		importFile(importPath)
 
-			if (directoryError)
-				importFile(importPath)
+	else {
 
-			else {
+		var xmlFiles = filePaths
+			.filter(isXmlFile)
+			.map(function (filePath) {
+				return path.join(importPath, filePath)
+			})
 
-				var xmlFiles = filePaths
-					.filter(isXmlFile)
-					.map(function (filePath) {
-						return path.join(importPath, filePath)
-					})
+		console.log('\nImport ' + xmlFiles.length + ' files')
 
-				console.log('\nImport ' + xmlFiles.length + ' files')
-
-				importLoop(xmlFiles, 0)
-			}
-		})
+		importLoop(xmlFiles, 0)
+	}
 })
 

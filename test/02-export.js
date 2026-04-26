@@ -3,6 +3,7 @@
 var fse = require('fs-extra'),
 	path = require('path'),
 	yaml = require('js-yaml'),
+	childProcess = require('child_process'),
 
 	cityNode = require(path.join('..', 'modules', 'cityNode')),
 	collada2gltf = require(path.join('..', 'modules', 'collada2gltf')),
@@ -11,28 +12,46 @@ var fse = require('fs-extra'),
 		path.resolve(__dirname, '../config.yaml')
 	),
 	fileName = 'building',
-	options = {
-		format: 'kml',
-		id: 'UUID_675bf0e1-eb30-4611-94ce-7b7c9d6885e2',
-		outputFile: path.join(__dirname, 'build', fileName + '.kml'),
-		//outputFiles: [
-		//	path.resolve(__dirname, '../build', fileName + '1.kml'),
-		//	path.resolve(__dirname, '../build', fileName + '2.kml')
-		//],
-		//ids: [
-		//	'UUID_b960fd73-ae5b-4259-b6cf-768abd303c7d',
-		//	'UUID_894b8840-054d-41ff-af45-07139d5fdd7a '
-		//],
-		config: yaml.safeLoad(projectConfigYaml)
-	}
+	config = yaml.safeLoad(projectConfigYaml)
 
 
 describe('Export & Conversion', function () {
 
-	var buildDir = path.join(__dirname, 'build')
+	var buildDir = path.join(__dirname, 'build'),
+		options
 
-	before(function () {
+	before(function (done) {
 		fse.ensureDirSync(buildDir)
+
+		// class_id 26 = Building in 3DCityDB OBJECTCLASS table.
+		// Picks any imported building so the test isn't tied to a
+		// specific gml:id that may not exist in the fixtures.
+		// Uses psql directly because the bundled pg@4.x client hangs
+		// when negotiating the PG14 wire protocol on modern Node.
+		childProcess.exec(
+			'PGPASSWORD=cityviz psql -h localhost -U cityviz -d cityviz ' +
+			'-tA -c "SELECT gmlid FROM cityobject ' +
+			'WHERE class_id = 26 LIMIT 1"',
+			function (error, stdout) {
+				if (error)
+					return done(error)
+
+				var gmlid = stdout.trim()
+
+				if (!gmlid)
+					return done(new Error(
+						'No buildings in DB; import test must run first'
+					))
+
+				options = {
+					format: 'kml',
+					id: gmlid,
+					outputFile: path.join(buildDir, fileName + '.kml'),
+					config: config
+				}
+				done()
+			}
+		)
 	})
 
 	it('should export a collada file', function (done) {

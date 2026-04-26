@@ -3,7 +3,7 @@
 var path = require('path'),
 	express = require('express'),
 	serveFavicon = require('serve-favicon'),
-	rdbWrapper = require('./src/rdbWrapper'),
+	dbWrapper = require('./src/dbWrapper'),
 	app = express(),
 	port = 3000
 
@@ -27,7 +27,7 @@ function sendCityObjects(request, response) {
 
 	if (request.query.type === 'buffered') {
 
-		rdbWrapper
+		dbWrapper
 			.get(options)
 			.then(function (cityObjects) {
 				response.json(cityObjects)
@@ -40,7 +40,7 @@ function sendCityObjects(request, response) {
 
 		response.set('Content-Type', 'text/event-stream')
 
-		stream = rdbWrapper.getStream(options)
+		stream = dbWrapper.getStream(options)
 
 		stream.on('data', function (chunk) {
 			response.write('data:' + chunk + '\n\n')
@@ -55,7 +55,7 @@ function sendCityObjects(request, response) {
 
 		response.set('Content-Type', 'application/json')
 
-		rdbWrapper
+		dbWrapper
 			.getStream(options)
 			.pipe(response)
 	}

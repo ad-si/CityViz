@@ -45,17 +45,12 @@ Please checkout [test/export.js](./test/export.js)
 for the export to collada and the conversion to gltf
 
 
-### RethinkDB based version
+### SQLite based version
 
-1. Install RethinkDB
-	On Mac with hombrew: `brew update && brew install rethinkdb`
-1. Start RethinkDB by executing `rethinkdb` in your command line
-1. Use the admin interface on [localhost:8080](http://localhost:8080)
-	to manage the database.
-1. Import citygml files into your database by running:
-   
+1. Import citygml files into the SQLite database by running:
+
    ```sh
-   cityviz rdb-import <gml file | directory of gml files>
+   cityviz db-import <gml file | directory of gml files>
    ```
 1. Run `node app.js` to start the application server
 
