@@ -46,10 +46,6 @@
     "xml2json": "^0.6.1",
     "yargs": "~3.3.1"
   },
-  "scripts": {
-    "test": "mocha test",
-    "checkStyle": "jscs . && jshint ."
-  },
   "devDependencies": {
     "jscs": "^1.11.3",
     "jshint": "^2.6.3",
