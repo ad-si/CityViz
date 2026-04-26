@@ -1,9 +1,6 @@
 'use strict'
 
-require('es6-promise').polyfill()
-
 var fs = require('fs'),
-	fsp = require('fs-promise'),
 	fse = require('fs-extra'),
 	path = require('path'),
 	temp = require('temp'),
@@ -12,7 +9,6 @@ var fs = require('fs'),
 	parser = require('xml2json'),
 	yaml = require('js-yaml'),
 	pg = require('pg'),
-	pgQuery = require('pg-query'),
 
 	applyDefaults = require('../applyDefaults'),
 	packageFile = require('../../package.json'),
@@ -34,11 +30,30 @@ var fs = require('fs'),
 	},
 	intitalDbString = 'postgres://' + process.env.USER + '@localhost/template1',
 	dbString = 'postgres://cityviz:cityviz@localhost/cityviz',
-	projectConfig = yaml.safeLoad(
+	projectConfig = yaml.load(
 		fs.readFileSync(
 			path.resolve(__dirname, '../../config.yaml')
 		)
 	)
+
+
+function pgQuery(connectionString, sql) {
+	var client = new pg.Client({connectionString: connectionString})
+	return client.connect()
+		.then(function () {
+			return client.query(sql)
+		})
+		.then(function (result) {
+			return client.end().then(function () {
+				return result
+			})
+		})
+		.catch(function (error) {
+			return client.end().then(function () {
+				throw error
+			})
+		})
+}
 
 
 function executeShellCommand(additionalArguments, options, exportFile,
@@ -94,7 +109,7 @@ function executeShellCommand(additionalArguments, options, exportFile,
 			if (error)
 				return callback(error)
 
-			fsp
+			fse
 				.remove(configFile)
 				.catch(function (error) {
 					setTimeout(function () {
@@ -103,10 +118,10 @@ function executeShellCommand(additionalArguments, options, exportFile,
 				})
 
 			if (exportFile && actualExportFile) {
-				fsp
-					.move(actualExportFile, exportFile, {clobber: true})
+				fse
+					.move(actualExportFile, exportFile, {overwrite: true})
 					.then(function () {
-						return fsp.readFile(exportFile)
+						return fse.readFile(exportFile)
 					})
 					.then(function (data) {
 						if (!options.outputFile)
@@ -116,7 +131,7 @@ function executeShellCommand(additionalArguments, options, exportFile,
 					})
 					.then(function () {
 						if (!options.outputFile)
-							return fs.remove(exportFile)
+							return fse.remove(exportFile)
 					})
 					.catch(function (error) {
 						setTimeout(function () {
@@ -149,9 +164,7 @@ module.exports.setupDatabase = function () {
 		return error.message.search(/already exists/gi) !== -1
 	}
 
-	pgQuery.connectionParameters = intitalDbString
-
-	pgQuery("create user cityviz with password 'cityviz'")
+	pgQuery(intitalDbString, "create user cityviz with password 'cityviz'")
 		.then(
 		function () {
 			console.log('User created')
@@ -164,7 +177,7 @@ module.exports.setupDatabase = function () {
 		})
 
 		.then(function () {
-			return pgQuery('create database cityviz')
+			return pgQuery(intitalDbString, 'create database cityviz')
 				.then(
 				function () {
 					console.log('Database created')
@@ -180,6 +193,7 @@ module.exports.setupDatabase = function () {
 
 		.then(function () {
 			return pgQuery(
+				intitalDbString,
 				'grant all privileges on database cityviz to cityviz')
 				.then(
 				function () {
@@ -194,7 +208,7 @@ module.exports.setupDatabase = function () {
 		})
 
 		.then(function () {
-			return pgQuery('create extension postgis')
+			return pgQuery(dbString, 'create extension postgis')
 				.then(
 				function () {
 					console.log('Created postgis extension')
@@ -208,7 +222,7 @@ module.exports.setupDatabase = function () {
 		})
 
 		.then(function () {
-			return pgQuery('create extension postgis_topology')
+			return pgQuery(dbString, 'create extension postgis_topology')
 				.then(
 				function () {
 					console.log('Created postgis_topology extension')
@@ -222,7 +236,7 @@ module.exports.setupDatabase = function () {
 		})
 
 		.then(function () {
-			return pgQuery('ALTER EXTENSION postgis SET SCHEMA public')
+			return pgQuery(dbString, 'ALTER EXTENSION postgis SET SCHEMA public')
 		})
 
 		.then(function () {
@@ -301,17 +315,13 @@ module.exports.setupDatabase = function () {
 
 module.exports.dropDatabase = function () {
 
-	pgQuery.connectionParameters = intitalDbString
-
-	pgQuery(
-		'drop database if exists cityviz',
-		function (error, rows, result) {
-			if (error)
-				throw error
-
+	pgQuery(intitalDbString, 'drop database if exists cityviz')
+		.then(function (result) {
 			console.log(result)
-		}
-	)
+		})
+		.catch(function (error) {
+			throw error
+		})
 }
 
 

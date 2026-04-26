@@ -1,7 +1,4 @@
-require('es6-promise').polyfill()
-
-var fs = require('fs'),
-	fsp = require('fs-promise'),
+var fse = require('fs-extra'),
 	path = require('path'),
 	temp = require('temp'),
 	childProcess = require('child_process')
@@ -92,13 +89,13 @@ module.exports = function (options, callback) {
 				callback()
 
 			else
-				fsp
+				fse
 					.readFile(exportFile)
 					.then(function (data) {
 						callback(null, data)
 					})
 					.then(function () {
-						return fs.remove(exportFile)
+						return fse.remove(exportFile)
 					})
 					.catch(function (error) {
 						setTimeout(function () {

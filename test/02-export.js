@@ -12,7 +12,7 @@ var fse = require('fs-extra'),
 		path.resolve(__dirname, '../config.yaml')
 	),
 	fileName = 'building',
-	config = yaml.safeLoad(projectConfigYaml)
+	config = yaml.load(projectConfigYaml)
 
 
 describe('Export & Conversion', function () {

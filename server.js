@@ -1,52 +1,58 @@
 'use strict'
 
-// establish DB connection
-var MongoClient = require('mongodb').MongoClient,
-	express = require('express'),
-	compression = require('compression'),
-	url = require('url'),
-	request = require('request'),
+// Lightweight Cesium-style dev server: serves static files and proxies
+// arbitrary URLs through /proxy/<url>. Uses Node's built-in fetch
+// (Node 18+) so no third-party HTTP client is needed.
 
-	yargs = require('yargs').options({
-		port: {
-			default: 8080,
-			description: 'Port to listen on.'
-		},
-		public: {
-			type: 'boolean',
-			description: 'Run a public server that listens ' +
-			'on all interfaces.'
-		},
-		'upstream-proxy': {
-			description: 'A standard proxy server that will be used to' +
-			' retrieve data. Specify a URL including port, ' +
-			'e.g. "http://proxy:8000".'
-		},
-		'bypass-upstream-proxy-hosts': {
-			description: 'A comma separated list of hosts that will ' +
-			'bypass the specified upstream_proxy, ' +
-			'e.g. "lanhost1,lanhost2"'
-		},
-		help: {
-			alias: 'h',
-			type: 'boolean',
-			description: 'Show this help.'
-		}
-	}),
+var express = require('express'),
+	compression = require('compression'),
+	path = require('path'),
+	url = require('url'),
+
+	yargs = require('yargs/yargs')(process.argv.slice(2))
+		.options({
+			port: {
+				default: 8080,
+				description: 'Port to listen on.'
+			},
+			public: {
+				type: 'boolean',
+				description: 'Run a public server that listens ' +
+				'on all interfaces.'
+			},
+			'upstream-proxy': {
+				description: 'A standard proxy server that will be used to' +
+				' retrieve data. Specify a URL including port, ' +
+				'e.g. "http://proxy:8000".'
+			},
+			'bypass-upstream-proxy-hosts': {
+				description: 'A comma separated list of hosts that will ' +
+				'bypass the specified upstream_proxy, ' +
+				'e.g. "lanhost1,lanhost2"'
+			},
+			help: {
+				alias: 'h',
+				type: 'boolean',
+				description: 'Show this help.'
+			}
+		}),
 	argv = yargs.argv,
 	bypassUpstreamProxyHosts,
 	dontProxyHeaderRegex,
 	upstreamProxy,
 	server,
-	mime,
 	app,
-	projectServiceUrlParts
+	projectServiceUrlParts,
+	extraMimeTypes = {
+		'.czml': 'application/json',
+		'.geojson': 'application/json',
+		'.topojson': 'application/json',
+		'.gltf': 'application/json',
+		'.glsl': 'text/plain'
+	}
 
-/***
- * featureInfo is stored locally because its not available yet in the converted data
- * @type {*[]}
- */
-
+// featureInfo is stored locally because it's not yet available in the
+// converted data
 var featureInfo = [
 	{ "gltfid": "54ee20fc0aeba2353a80330d", "levels": 6, "roof": "gray", "height": "17m", "coordinates": [4.4446946, 51.9125311] },
 	{ "gltfid": "54ee20ce0aeba2353a803303", "levels": 6, "roof": "brown", "height": "15m", "coordinates": [4.4446946, 51.9115311] },
@@ -58,21 +64,22 @@ var featureInfo = [
 	{ "gltfid": "54ee20f20aeba2353a80330b", "levels": 2, "height": "10m", "roof": "brown", "coordinates": [4.4492946, 51.9112311]}
 ]
 
-if (argv.help)
-	return yargs.showHelp()
+if (argv.help) {
+	yargs.showHelp()
+	process.exit(0)
+}
 
-
-// Eventually this mime type configuration will need to change
-// https://github.com/tj/send/commit/d2cb546
-mime = express.static.mime
-mime.define({
-	'application/json': ['czml', 'json', 'geojson', 'topojson', 'gltf'],
-	'text/plain': ['glsl']
-})
 
 app = express()
 app.use(compression())
-app.use(express.static(__dirname))
+app.use(express.static(__dirname, {
+	setHeaders: function (res, filePath) {
+		var ext = path.extname(filePath).toLowerCase(),
+			type = extraMimeTypes[ext]
+		if (type)
+			res.setHeader('Content-Type', type)
+	}
+}))
 
 
 function getRemoteUrlFromParam(req) {
@@ -120,9 +127,39 @@ if (argv['bypass-upstream-proxy-hosts']) {
 		})
 }
 
-app.get('/proxy/*', function (req, res, next) {
-	var remoteUrl,
-		proxy
+
+function proxyRequest(remoteUrl, req, res) {
+
+	var dispatcher
+
+	if (upstreamProxy && !(remoteUrl.host in bypassUpstreamProxyHosts)) {
+		var ProxyAgent = require('undici').ProxyAgent
+		dispatcher = new ProxyAgent(upstreamProxy)
+	}
+
+	fetch(url.format(remoteUrl), {
+		headers: filterHeaders(req, req.headers),
+		dispatcher: dispatcher
+	})
+		.then(function (response) {
+			res.status(response.status)
+			response.headers.forEach(function (value, name) {
+				if (!dontProxyHeaderRegex.test(name))
+					res.setHeader(name, value)
+			})
+			return response.arrayBuffer()
+		})
+		.then(function (body) {
+			res.send(Buffer.from(body))
+		})
+		.catch(function (error) {
+			res.status(500).send(String(error))
+		})
+}
+
+
+app.get('/proxy/*splat', function (req, res) {
+	var remoteUrl
 
 	// look for request like
 	// localhost:8080/proxy/http://example.com/file?query=1
@@ -138,34 +175,12 @@ app.get('/proxy/*', function (req, res, next) {
 	}
 
 	if (!remoteUrl)
-		return res.send(400, 'No url specified.')
+		return res.status(400).send('No url specified.')
 
 	if (!remoteUrl.protocol)
 		remoteUrl.protocol = 'http:'
 
-	if (upstreamProxy && !(remoteUrl.host in bypassUpstreamProxyHosts))
-		proxy = upstreamProxy
-
-
-	// encoding : null means "body" passed to the callback will be raw bytes
-	request.get(
-		{
-			url: url.format(remoteUrl),
-			headers: filterHeaders(req, req.headers),
-			encoding: null,
-			proxy: proxy
-		},
-		function (error, response, body) {
-			var code = 500
-
-			if (response) {
-				code = response.statusCode
-				res.header(filterHeaders(req, response.headers))
-			}
-
-			res.send(code, body)
-		}
-	)
+	proxyRequest(remoteUrl, req, res)
 })
 
 /***
@@ -173,62 +188,15 @@ app.get('/proxy/*', function (req, res, next) {
  * @params: id - buildingID
  */
 
-app.get('/db/getFeatureInfo', function (req, res, next) {
+app.get('/db/getFeatureInfo', function (req, res) {
 	var info = {}
-	for(var i=0; i<featureInfo.length; i++){
-		if(featureInfo[i]["gltfid"] == req.query.id){
+	for (var i = 0; i < featureInfo.length; i++) {
+		if (featureInfo[i]["gltfid"] == req.query.id) {
 			info = featureInfo[i]
-			break;
+			break
 		}
 	}
-	//{buildingName: 'Rathaus', height: '45m'}
 	res.status(200).send(info)
-
-	/***
-	 * the database is currently not connected because the feature info
-	 * for buildings is not available due to issues with the conversion pipeline
-	 */
-	/*
-	MongoClient.connect(
-		'mongodb://localhost:27017/cityViz',
-		function (err, db) {
-			if (!err) {
-				console.log('We are connected')
-				var collection = db.collection('featureInfo')
-				if (collection != null)
-					collection.find({"gtlfid": req.query.id}).toArray(function (err, items) {
-						res.status(200).send({err: err, result: items})
-					})
-				else
-					res
-						.status(404)
-						.send({result: 'Could not retrieve data from db...'})
-			}
-		})*/
-})
-
-/***
- * the getScene route queries all scene information from the datavase and retunr it
- * @params: none
- */
-app.get('/db/getScene', function (req, res, next) {
-	// Connect to the db
-	MongoClient.connect(
-		'mongodb://localhost:27017/cityViz',
-		function (err, db) {
-			if (!err) {
-				console.log('We are connected')
-				var collection = db.collection('buildings')
-				if (collection != null)
-					collection.find({}).toArray(function (err, items) {
-						res.status(200).send({err: err, result: items})
-					})
-				else
-					res
-						.status(404)
-						.send({result: 'Could not retrieve data from db...'})
-			}
-		})
 })
 
 /***
@@ -237,33 +205,10 @@ app.get('/db/getScene', function (req, res, next) {
  * @params: values - 2-dimensional array of float values
  */
 
-app.get('/project/*', function (req, res, next) {
-	var proxy,
-		serviceUrl = createServiceUrl(req.query.values)
-
-	console.log(serviceUrl)
-
-	if (upstreamProxy && !(serviceUrl.host in bypassUpstreamProxyHosts))
-		proxy = upstreamProxy
-
-	request.get(
-		{
-			url: url.format(serviceUrl),
-			headers: filterHeaders(req, req.headers),
-			encoding: null,
-			proxy: proxy
-		},
-		function (error, response, body) {
-			var code = 500
-
-			if (response) {
-				code = response.statusCode
-				res.header(filterHeaders(req, response.headers))
-			}
-
-			res.send(code, body)
-		}
-	)
+app.get('/project/*splat', function (req, res) {
+	var serviceUrl = url.parse(createServiceUrl(req.query.values))
+	console.log(url.format(serviceUrl))
+	proxyRequest(serviceUrl, req, res)
 })
 
 server = app.listen(

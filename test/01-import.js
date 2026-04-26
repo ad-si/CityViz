@@ -14,7 +14,7 @@ var fs = require('fs'),
 
 	options = {
 		importFile: path.join(__dirname, 'fixtures', 'cityGml'),
-		config: yaml.safeLoad(projectConfigYaml)
+		config: yaml.load(projectConfigYaml)
 	}
 
 

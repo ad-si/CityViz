@@ -3,7 +3,8 @@
 'use strict'
 
 var path = require('path'),
-	program = require('commander'),
+	Command = require('commander').Command,
+	program = new Command(),
 
 	packageData = require('../package.json'),
 	cityNode = require('../modules/cityNode')

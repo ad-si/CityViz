@@ -7,7 +7,8 @@ var fs = require('fs'),
 	util = require('util'),
 	assert = require('assert'),
 
-	program = require('commander'),
+	Command = require('commander').Command,
+	program = new Command(),
 
 	cityNode = require('../modules/cityNode'),
 	citygml2gltf = require('../modules/citygml2gltf'),

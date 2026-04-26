@@ -1,9 +1,11 @@
 'use strict'
 
 var viewer = new Cesium.Viewer('cesiumContainer', {
-		imageryProvider: new Cesium.OpenStreetMapImageryProvider({
-			url: 'https://a.tile.openstreetmap.org/'
-		}),
+		baseLayer: new Cesium.ImageryLayer(
+			new Cesium.OpenStreetMapImageryProvider({
+				url: 'https://a.tile.openstreetmap.org/'
+			})
+		),
 		baseLayerPicker: false,
 		geocoder: false
 	}),
@@ -52,6 +54,7 @@ function getServerEvents() {
 			name: 'building ' + building.id,
 			polygon: {
 				hierarchy: coordinates,
+				height: 0,
 				material: Cesium.Color.RED.withAlpha(0.5),
 				outline: true,
 				outlineColor: Cesium.Color.BLACK
@@ -110,6 +113,7 @@ function getCityObjects() {
 				'District: ' + building.fileName + '<br>',
 				polygon: {
 					hierarchy: coordinates,
+					height: 0,
 					material: Cesium.Color.RED.withAlpha(0.5),
 					outline: true,
 					outlineColor: Cesium.Color.BLACK
