@@ -22,7 +22,7 @@ var fs = require('fs'),
 	           'java',
 	programDirectory = '/Applications/3DCityDB-Importer-Exporter',
 	importExportExecutable = path.resolve(
-		__dirname, '../../node_modules/3dcitydb-importer-exporter' +
+		__dirname, '../../node_modules/3dcitydb-impexp' +
 		'/lib/3dcitydb-impexp.jar'
 	),
 	dbConfig = {
@@ -50,6 +50,9 @@ function executeShellCommand(additionalArguments, options, exportFile,
 			javaPath,
 			'-Xms128m',
 			'-Xmx768m',
+			'--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+			'--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED',
+			'--add-opens', 'java.base/java.util=ALL-UNNAMED',
 			'-jar',
 			importExportExecutable,
 			'-shell'
@@ -231,7 +234,7 @@ module.exports.setupDatabase = function () {
 			sqlScriptsPath = path.resolve(
 				__dirname,
 				'../../node_modules',
-				'3dcitydb-importer-exporter',
+				'3dcitydb-impexp',
 				'3dcitydb',
 				'postgis'
 			)

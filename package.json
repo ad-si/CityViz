@@ -50,5 +50,8 @@
     "jscs": "^1.11.3",
     "jshint": "^2.6.3",
     "mocha": "^2.1.0"
+  },
+  "overrides": {
+    "graceful-fs": "^4.2.11"
   }
 }
